@@ -1,7 +1,19 @@
 <script lang="ts">
-    import { Card, Label, Input, Button, DarkMode, Helper } from "flowbite-svelte";
+    import { Card, Label, Input, Button, DarkMode, Helper, Spinner } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
+    import { authenticate, authStore } from "./auth.store";
+    import { Status } from "../../types";
+    import { navigate } from "svelte-routing";
+
+    $: ({ status, response } = $authStore);
+
+    authStore.subscribe((value) => {
+        // TODO: add failed toast notification here as well
+
+        // TODO: add toast notification here
+        if (value.response.success) navigate("/dashboard", {replace: true})
+    });
 
     const { form, errors, handleChange, handleSubmit } = createForm({
         initialValues: {
@@ -12,9 +24,7 @@
             email: yup.string().email('Your email is not valid').required('Please provide your email'),
             password: yup.string().required('Your password is required')
         }),
-        onSubmit: values => {
-            console.log('attempt login', values);
-        }
+        onSubmit: values => authenticate(values.email, values.password),
     });
 
 </script>
@@ -47,7 +57,16 @@
                 {#if $errors.password}<Helper class="mt-2" color="red">{$errors.password}</Helper>{/if}
             </Label>
 
-            <Button type="submit" class="w-full">Login</Button>
+            {#if response.success == false && response.message}
+                <Helper class="my-2" color="red">{response.message}</Helper>
+            {/if}
+
+            <Button type="submit" class="w-full">
+                {#if status == Status.LOADING}
+                    <Spinner class="me-3" size="4" color="white" />
+                {/if}
+                Login
+            </Button>
         </form>
     </Card>
 </div>
