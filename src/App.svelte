@@ -4,6 +4,7 @@
   import { onMount } from "svelte";
   import { supabase } from "./supabaseClient";
   import Authguard from "./lib/gaurds/authguard.svelte";
+  import { Lwptoast } from "./lib/components";
 
   onMount(async () => {
     // Check initial session
@@ -35,3 +36,6 @@
   </Route>
 
 </Router>
+
+<!-- Global Toast Manager -->
+<Lwptoast />

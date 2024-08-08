@@ -3,16 +3,19 @@
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
     import { authenticate, authStore } from "./auth.store";
-    import { Status } from "../../types";
+    import { Status, ToastType } from "../../types";
     import { navigate } from "svelte-routing";
+    import { toast } from "../../components";
 
     $: ({ status, response } = $authStore);
 
     authStore.subscribe((value) => {
-        // TODO: add failed toast notification here as well
-
-        // TODO: add toast notification here
-        if (value.response.success) navigate("/dashboard", {replace: true})
+        if (value.response.success && value.response.message) {
+            toast({message: value.response.message, type: ToastType.SUCCESS});
+            navigate("/dashboard", {replace: true})
+        } else if (!value.response.success && value.response.message) {
+            toast({message: value.response.message, type: ToastType.ERROR});
+        }
     });
 
     const { form, errors, handleChange, handleSubmit } = createForm({
