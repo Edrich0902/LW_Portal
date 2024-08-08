@@ -1,7 +1,19 @@
 <script lang="ts">
-
+  import { Router, Route } from "svelte-routing";
+  import { Auth, Dashboard } from "./lib/routes";
 </script>
 
-<main>
-  <span class="text-primary-900">Testing primary text</span>
-</main>
+<!-- APP ROUTES -->
+<Router>
+
+  <!-- Auth Route -->
+  <Route path="">
+    <Auth />
+  </Route>
+
+  <!-- Dashboard Route -->
+  <Route path="/dashboard">
+    <Dashboard />
+  </Route>
+
+</Router>
