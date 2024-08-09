@@ -4,8 +4,7 @@
   import { onMount } from "svelte";
   import { supabase } from "./supabaseClient";
   import Authguard from "./lib/gaurds/authguard.svelte";
-  import { Lwptoast } from "./lib/components";
-  import Lwpdrawer from "./lib/components/lwp-drawer/lwpdrawer.svelte";
+  import { Lwptoast, Lwpdrawer, LwpPageContainer } from "./lib/components";
   import { writable } from "svelte/store";
 
   onMount(async () => {
@@ -49,14 +48,18 @@
     <!-- Dashboard Route -->
     <Route path="/dashboard">
       <Authguard>
-        <Dashboard />
+        <LwpPageContainer>
+          <Dashboard />
+        </LwpPageContainer>
       </Authguard>
     </Route>
 
     <!-- Sermons Route -->
     <Route path="/sermons">
       <Authguard>
-        <Sermons />
+        <LwpPageContainer>
+          <Sermons />
+        </LwpPageContainer>
       </Authguard>
     </Route>
 
