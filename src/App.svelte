@@ -5,6 +5,8 @@
   import { supabase } from "./supabaseClient";
   import Authguard from "./lib/gaurds/authguard.svelte";
   import { Lwptoast } from "./lib/components";
+  import Lwpdrawer from "./lib/components/lwp-drawer/lwpdrawer.svelte";
+  import { writable } from "svelte/store";
 
   onMount(async () => {
     // Check initial session
@@ -18,24 +20,39 @@
       navigate("", {replace: true});
     }
   });
+
+  const isAuthed = writable<boolean>(false);
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (session != null) isAuthed.set(true);
+    else isAuthed.set(false);
+  });
+
 </script>
 
-<!-- APP ROUTES -->
-<Router>
+<!-- Show drawer only if authed -->
+<div class="flex flex-row">
+  {#if $isAuthed}
+    <Lwpdrawer />
+  {/if}
 
-  <!-- Auth Route -->
-  <Route path="">
-    <Auth />
-  </Route>
+  <!-- APP ROUTES -->
+  <Router>
 
-  <!-- Dashboard Route -->
-  <Route path="/dashboard">
-    <Authguard>
-      <Dashboard />
-    </Authguard>
-  </Route>
+    <!-- Auth Route -->
+    <Route path="">
+      <Auth />
+    </Route>
 
-</Router>
+    <!-- Dashboard Route -->
+    <Route path="/dashboard">
+      <Authguard>
+        <Dashboard />
+      </Authguard>
+    </Route>
+
+  </Router>
+</div>
 
 <!-- Global Toast Manager -->
 <Lwptoast />

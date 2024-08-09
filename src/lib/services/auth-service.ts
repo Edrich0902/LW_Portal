@@ -10,3 +10,10 @@ export const supabaseAuth = async (email: string, password: string): Promise<Aut
     if (error != null) return {code: error.code, message: error.message, success: false}
     else return {code: 'success', message: 'Authentication Successful', success: true}
 }
+
+export const supabaseSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error != null) return {code: error.code, message: error.message, success: false}
+    else return {code: 'success', message: 'Logged Out', success: true}
+}
