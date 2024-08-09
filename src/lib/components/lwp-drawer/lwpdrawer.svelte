@@ -8,6 +8,7 @@
     let activeUrl = "/dashboard"; // dashboard is active by default
 
     let activeClass = "flex items-center p-2 text-base font-normal text-primary-900 bg-primary-200 dark:bg-primary-700 rounded-lg dark:text-white hover:bg-primary-100 dark:hover:bg-gray-700";
+    let dropdownActiveClass = "flex items-center p-2 ps-11 text-base font-normal text-primary-900 bg-primary-200 dark:bg-primary-700 rounded-lg dark:text-white hover:bg-primary-100 dark:hover:bg-gray-700"
     let divClass = "overflow-y-auto py-4 px-3 bg-gray-50 rounded-lg mr-2 dark:bg-gray-800"
 
     let site = {
@@ -61,10 +62,10 @@
                     <FolderSolid />
                 </svelte:fragment>
 
-                <SidebarDropdownItem label="Sermons" href="/sermons" />
-                <SidebarDropdownItem label="Vision & Mission" href="/vision-mission" />
-                <SidebarDropdownItem label="Roleplayers" href="/roleplayers" />
-                <SidebarDropdownItem label="Upcoming Events" href="/events" />
+                <SidebarDropdownItem label="Sermons" href="/sermons" active={activeUrl == '/sermons'} activeClass={dropdownActiveClass} />
+                <SidebarDropdownItem label="Vision & Mission" href="/vision-mission" active={activeUrl == '/vision-mission'} activeClass={dropdownActiveClass} />
+                <SidebarDropdownItem label="Roleplayers" href="/roleplayers" active={activeUrl == '/roleplayers'} activeClass={dropdownActiveClass} />
+                <SidebarDropdownItem label="Upcoming Events" href="/events" active={activeUrl == '/events'} activeClass={dropdownActiveClass} />
 
             </SidebarDropdownWrapper>
 
