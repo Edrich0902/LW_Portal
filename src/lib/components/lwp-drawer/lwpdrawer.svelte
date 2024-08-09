@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Sidebar, SidebarGroup, SidebarWrapper, SidebarItem, DarkMode, SidebarBrand, Hr } from "flowbite-svelte";
-    import { ArrowLeftToBracketOutline, ChartPieSolid } from "flowbite-svelte-icons";
+    import { Sidebar, SidebarGroup, SidebarWrapper, SidebarItem, DarkMode, SidebarBrand, Hr, SidebarDropdownWrapper, SidebarDropdownItem } from "flowbite-svelte";
+    import { ArrowLeftToBracketOutline, ChartPieSolid, FolderSolid, UsersGroupSolid } from "flowbite-svelte-icons";
     import { supabaseSignOut } from "../../services/auth-service";
     import { navigate } from "svelte-routing";
     import { onMount } from "svelte";
@@ -49,6 +49,24 @@
                     <ChartPieSolid />
                 </svelte:fragment>
             </SidebarItem>
+
+            <SidebarItem label="Users" href="/users">
+                <svelte:fragment slot="icon">
+                    <UsersGroupSolid />
+                </svelte:fragment>
+            </SidebarItem>
+
+            <SidebarDropdownWrapper label="Content Mangement">
+                <svelte:fragment slot="icon">
+                    <FolderSolid />
+                </svelte:fragment>
+
+                <SidebarDropdownItem label="Sermons" href="/sermons" />
+                <SidebarDropdownItem label="Vision & Mission" href="/vision-mission" />
+                <SidebarDropdownItem label="Roleplayers" href="/roleplayers" />
+                <SidebarDropdownItem label="Upcoming Events" href="/events" />
+
+            </SidebarDropdownWrapper>
 
         </SidebarGroup>
 
