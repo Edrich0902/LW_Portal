@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router, Route, navigate } from "svelte-routing";
-  import { Auth, Dashboard } from "./lib/routes";
+  import { Auth, Dashboard, Sermons } from "./lib/routes";
   import { onMount } from "svelte";
   import { supabase } from "./supabaseClient";
   import Authguard from "./lib/gaurds/authguard.svelte";
@@ -14,10 +14,12 @@
 
     if (sessionResponse.data.session) {
       // there is a valid session
-      navigate("/dashboard", {replace: true});
+      if (window.location.pathname == "/" || window.location.pathname == "") {
+        navigate("/dashboard", {replace: true});
+      }
     } else {
       // there is no valid session route to login
-      navigate("", {replace: true});
+      navigate("/", {replace: true});
     }
   });
 
@@ -40,7 +42,7 @@
   <Router>
 
     <!-- Auth Route -->
-    <Route path="">
+    <Route path="/">
       <Auth />
     </Route>
 
@@ -48,6 +50,13 @@
     <Route path="/dashboard">
       <Authguard>
         <Dashboard />
+      </Authguard>
+    </Route>
+
+    <!-- Sermons Route -->
+    <Route path="/sermons">
+      <Authguard>
+        <Sermons />
       </Authguard>
     </Route>
 
