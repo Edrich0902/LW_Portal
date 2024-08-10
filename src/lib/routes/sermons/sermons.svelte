@@ -3,6 +3,7 @@
     import { initSermons, sermonsStore } from "./sermons.store";
     import { Status } from "../../types";
     import { onMount } from "svelte";
+    import { LwpLoader } from "../../components";
 
     $: ({ data, status } = $sermonsStore);
 
@@ -17,7 +18,7 @@
 
 <div>
     {#if status == Status.LOADING}
-        <P>Loading....</P>
+        <LwpLoader message={"Loadig Sermons"} messageSize="xs" />
     {/if}
 
     {#if status == Status.OK}
