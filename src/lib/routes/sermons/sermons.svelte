@@ -1,19 +1,19 @@
 <script lang="ts">
     import { Pagination, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
-    import { initSermons, pageSermons, sermonsStore } from "./sermons.store";
+    import { initSermons, pageSermons, sermonsStore, sortSermons } from "./sermons.store";
     import { Status, type Sermon } from "../../types";
     import { onMount } from "svelte";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
 
-    $: ({ data, status, pagination, filter } = $sermonsStore);
+    $: ({ data, status, pagination, filter, sort } = $sermonsStore);
 
-    const tableColumns: string[] = [
-        'Title',
-        'Pastor',
-        'Description',
-        'Created At',
-        'Updated At'
+    const tableColumns: {label: string, value: string}[] = [
+        {label: 'Title', value: 'title'},
+        {label:'Pastor', value: 'pastor'},
+        {label:'Description', value: 'description'},
+        {label:'Created At', value: 'created_at'},
+        {label:'Updated At', value: 'updated_at'},
     ];
 
     onMount(() => {
@@ -47,6 +47,11 @@
             to: (newPage * pagination.limit) + (pagination.limit - 1)
         });
     }
+
+    const sortSermonsIndex = async (column: string) => {
+        if (sort.column == column) sort.order == 'asc' ? sort.order = 'desc' : sort.order = 'asc';
+        await sortSermons({column: column, order: sort.order});
+    }
 </script>
 
 <svelte:head>
@@ -62,7 +67,7 @@
         <Table striped hoverable>
             <TableHead>
                 {#each tableColumns as column}
-                    <TableHeadCell class="cursor-pointer">{column}</TableHeadCell>
+                    <TableHeadCell class="cursor-pointer" on:click={() => sortSermonsIndex(column.value)}>{column.label}</TableHeadCell>
                 {/each}
             </TableHead>
 

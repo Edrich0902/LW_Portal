@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import type { LwpFilter, LwpPagination, Sermon } from "../../types";
+import type { LwpFilter, LwpPagination, LwpSort, Sermon } from "../../types";
 import { Status } from "../../types";
 import { sbQuerySermons } from "../../services/sermon-service";
 
@@ -8,6 +8,12 @@ export type SermonsStoreModel = {
     data: Sermon[];
     filter: LwpFilter;
     pagination: LwpPagination;
+    sort: LwpSort;
+}
+
+const sort: LwpSort = {
+    column: 'updated_at',
+    order: 'desc'
 }
 
 const pagination: LwpPagination = {
@@ -23,6 +29,7 @@ const defaults: SermonsStoreModel = {
     data: [],
     filter: {} as LwpFilter, // TODO: implement filter
     pagination: pagination,
+    sort: sort,
 }
 
 export const sermonsStore = writable<SermonsStoreModel>(defaults);
@@ -46,7 +53,7 @@ export const querySermons = async () => {
 
     const state = get(sermonsStore);
 
-    const response = await sbQuerySermons(state.pagination);
+    const response = await sbQuerySermons(state.pagination, state.sort);
 
     sermonsStore.update((state) => ({
         ...state,
@@ -65,6 +72,16 @@ export const pageSermons = async (pagination: LwpPagination) => {
     sermonsStore.update((state) => ({
         ...state,
         pagination: pagination,
+    }));
+
+    await querySermons();
+}
+
+// sort sermons function
+export const sortSermons = async (sort: LwpSort) => {
+    sermonsStore.update((state) => ({
+        ...state,
+        sort: sort,
     }));
 
     await querySermons();
