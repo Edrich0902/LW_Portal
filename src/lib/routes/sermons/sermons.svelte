@@ -1,10 +1,12 @@
 <script lang="ts">
-    import { Pagination, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
-    import { filterSermons, initSermons, pageSermons, sermonsStore, sortSermons } from "./sermons.store";
+    import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import { filterSermons, initSermons, pageSermons, querySermons, sermonsStore, sortSermons } from "./sermons.store";
     import { Status, type Sermon } from "../../types";
     import { onMount } from "svelte";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
+    import _ from "lodash";
+    import { PlusOutline } from "flowbite-svelte-icons";
 
     $: ({ data, status, pagination, filter, sort } = $sermonsStore);
 
@@ -16,11 +18,15 @@
         {label:'Updated At', value: 'updated_at'},
     ];
 
+    let searchText = "";
+
     onMount(() => {
         initSermons();
     });
 
     const selectSermon = (data: Sermon) => console.log('item clicked', data);
+
+    const newSermon = () => console.log('clicked new sermon');
 
     // pagination
     const previous = async () => {
@@ -53,10 +59,10 @@
         await sortSermons({column: column, order: sort.order});
     }
 
-    // TODO: add search bar input
-    const searchSermons = async (searchText: string) => {
+    const searchSermons = _.debounce(async () => {
         if (searchText.trim()) await filterSermons({searchText: searchText.trim()})
-    }
+        else await initSermons();
+    }, 200)
 </script>
 
 <svelte:head>
@@ -64,6 +70,14 @@
 </svelte:head>
 
 <div>
+    <div class="flex flex-row justify-between items-center gap-x-2">
+        <Search on:input={searchSermons} bind:value={searchText} size="sm" placeholder="Search Sermons" />
+        <Button size="sm" on:click={newSermon}>
+            <PlusOutline />
+            Add
+        </Button>
+    </div>
+
     {#if status == Status.LOADING}
         <LwpLoader message={"Loadig Sermons"} messageSize="xs" />
     {/if}
