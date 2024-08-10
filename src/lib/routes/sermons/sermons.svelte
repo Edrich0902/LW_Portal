@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Pagination, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
-    import { initSermons, pageSermons, sermonsStore, sortSermons } from "./sermons.store";
+    import { filterSermons, initSermons, pageSermons, sermonsStore, sortSermons } from "./sermons.store";
     import { Status, type Sermon } from "../../types";
     import { onMount } from "svelte";
     import { LwpLoader } from "../../components";
@@ -51,6 +51,11 @@
     const sortSermonsIndex = async (column: string) => {
         if (sort.column == column) sort.order == 'asc' ? sort.order = 'desc' : sort.order = 'asc';
         await sortSermons({column: column, order: sort.order});
+    }
+
+    // TODO: add search bar input
+    const searchSermons = async (searchText: string) => {
+        if (searchText.trim()) await filterSermons({searchText: searchText.trim()})
     }
 </script>
 

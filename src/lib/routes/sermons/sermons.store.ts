@@ -11,6 +11,10 @@ export type SermonsStoreModel = {
     sort: LwpSort;
 }
 
+const filter: LwpFilter = {
+    searchText: "",
+}
+
 const sort: LwpSort = {
     column: 'updated_at',
     order: 'desc'
@@ -27,7 +31,7 @@ const pagination: LwpPagination = {
 const defaults: SermonsStoreModel = {
     status: Status.UNINITIALIZED,
     data: [],
-    filter: {} as LwpFilter, // TODO: implement filter
+    filter: filter,
     pagination: pagination,
     sort: sort,
 }
@@ -53,7 +57,7 @@ export const querySermons = async () => {
 
     const state = get(sermonsStore);
 
-    const response = await sbQuerySermons(state.pagination, state.sort);
+    const response = await sbQuerySermons(state.pagination, state.sort, state.filter);
 
     sermonsStore.update((state) => ({
         ...state,
@@ -89,5 +93,10 @@ export const sortSermons = async (sort: LwpSort) => {
 
 // filter sermons function
 export const filterSermons = async (filter: LwpFilter) => {
+    sermonsStore.update((state) => ({
+        ...state,
+        filter: filter,
+    }));
 
+    await querySermons();
 }
