@@ -7,6 +7,7 @@
     import { formatDate } from "../../utils";
     import _ from "lodash";
     import { PlusOutline } from "flowbite-svelte-icons";
+    import SermonModal from "./sermonModal.svelte";
 
     $: ({ data, status, pagination, filter, sort } = $sermonsStore);
 
@@ -19,14 +20,24 @@
     ];
 
     let searchText = "";
+    let sermonModal = false;
+    let sermon: Sermon;
 
     onMount(() => {
         initSermons();
     });
 
-    const selectSermon = (data: Sermon) => console.log('item clicked', data);
+    const selectSermon = (data: Sermon) => {
+        sermonModal = true;
+        sermon = data;
+    }
 
-    const newSermon = () => console.log('clicked new sermon');
+    const newSermon = () => {
+        sermonModal = true;
+        sermon = {} as Sermon;
+    }
+
+    const closeCallback = () => sermonModal = false;
 
     // pagination
     const previous = async () => {
@@ -117,4 +128,7 @@
             <Pagination table on:next={next} on:previous={previous} />
         </div>
     {/if}
+
+    <!-- Create & Edit Modal -->
+    <SermonModal open={sermonModal} {sermon} {closeCallback} />
 </div>
