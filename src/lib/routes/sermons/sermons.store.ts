@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import type { LwpFilter, LwpPagination, Sermon } from "../../types";
 import { Status } from "../../types";
 import { sbQuerySermons } from "../../services/sermon-service";
@@ -12,7 +12,10 @@ export type SermonsStoreModel = {
 
 const pagination: LwpPagination = {
     from: 0,
-    to: 10,
+    to: 19,
+    limit: 20,
+    count: 0,
+    page: 0,
 }
 
 const defaults: SermonsStoreModel = {
@@ -36,22 +39,38 @@ export const initSermons = async () => {
 }
 
 export const querySermons = async () => {
-    const state: SermonsStoreModel = {
-        ...defaults,
-        status: Status.LOADING
-    }
+    sermonsStore.update((state) => ({
+        ...state,
+        status: Status.LOADING,
+    }))
 
-    sermonsStore.set(state);
+    const state = get(sermonsStore);
 
     const response = await sbQuerySermons(state.pagination);
 
     sermonsStore.update((state) => ({
         ...state,
-        data: response,
+        data: response.data,
+        pagination: {
+            ...state.pagination,
+            count: response.count,
+            to: response.count < pagination.limit ? response.count : (pagination.limit - 1)
+        },
         status: Status.OK
     }))
 }
 
 // page sermons function
+export const pageSermons = async (pagination: LwpPagination) => {
+    sermonsStore.update((state) => ({
+        ...state,
+        pagination: pagination,
+    }));
+
+    await querySermons();
+}
 
 // filter sermons function
+export const filterSermons = async (filter: LwpFilter) => {
+
+}

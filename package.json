@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.45.1",
+    "moment": "^2.30.1",
     "svelte-forms-lib": "^2.0.1",
     "yup": "^1.4.0"
   }

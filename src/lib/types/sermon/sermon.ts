@@ -4,6 +4,6 @@ export type Sermon = {
     description?: string;
     link: string;
     pastor: string;
-    createdAt?: string;
-    updatedAt?: string;
+    created_at?: string;
+    updated_at?: string;
 }
