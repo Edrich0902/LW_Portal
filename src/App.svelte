@@ -32,7 +32,7 @@
 </script>
 
 <!-- Show drawer only if authed -->
-<div class="flex flex-row">
+<div class="flex flex-row items-start gap-x-2">
   {#if $isAuthed}
     <Lwpdrawer />
   {/if}
