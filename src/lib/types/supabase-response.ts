@@ -5,3 +5,8 @@ export type SupabaseResponse<T> = {
     count: number;
     error?: PostgrestError
 }
+
+export type SingleSupabaseResponse<T> = {
+    data: T | null;
+    error?: PostgrestError;
+}

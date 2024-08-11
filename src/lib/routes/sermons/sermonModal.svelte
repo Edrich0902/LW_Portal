@@ -1,12 +1,16 @@
 <script lang="ts">
-    import { Button, Helper, Input, Label, Modal } from "flowbite-svelte";
-    import type { Sermon } from "../../types";
+    import { Button, Helper, Input, Label, Modal, Spinner } from "flowbite-svelte";
+    import { Status, ToastType, type Sermon } from "../../types";
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
+    import { createSermon, initSermonModal, sermonModalStore, updateSermon } from "./sermonModal.store";
+    import { toast } from "../../components";
 
     export let open: boolean = false;
     export let sermon: Sermon;
     export let closeCallback: (reload: boolean) => void;
+
+    $: ({ status } = $sermonModalStore);
 
     const { form, errors, handleChange, handleSubmit } = createForm<Sermon>({
         initialValues: {
@@ -21,10 +25,22 @@
             link: yup.string().required('Link required'),
         }),
         onSubmit: values => {
-            if (values.id) console.log('edit', values)
-            else console.log('create', values)
+            if (values.id) updateSermon(values);
+            else createSermon(values);
         }
     });
+
+    sermonModalStore.subscribe(state => {
+        if (state.status == Status.OK) {
+            toast({message: 'Sermon Saved', type: ToastType.SUCCESS})
+            closeCallback(true);
+
+            initSermonModal();
+        }
+        if (state.status == Status.ERROR) {
+            toast({message: 'Error Saving Sermon', type: ToastType.ERROR})
+        }
+    })
 </script>
 
 <Modal title={sermon?.id ? 'Edit Sermon' : 'Add Sermon'} bind:open={open} on:close={() => closeCallback(false)}>
@@ -51,9 +67,9 @@
         <div class="flex flex-row justify-end items-center">
             <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
             <Button type="submit">
-                <!-- {#if status == Status.LOADING}
+                {#if status == Status.LOADING}
                     <Spinner class="me-3" size="4" color="white" />
-                {/if} -->
+                {/if}
                 Save
             </Button>
         </div>

@@ -1,5 +1,5 @@
 import { supabase } from "../../supabaseClient";
-import type { LwpFilter, LwpPagination, LwpSort, Sermon, SupabaseResponse } from "../types";
+import type { LwpFilter, LwpPagination, LwpSort, Sermon, SingleSupabaseResponse, SupabaseResponse } from "../types";
 import { formatSearchText } from "../utils";
 
 export const sbQuerySermons = async (pagination: LwpPagination, sort: LwpSort, filter?: LwpFilter): Promise<SupabaseResponse<Sermon>> => {
@@ -27,4 +27,38 @@ export const sbQuerySermons = async (pagination: LwpPagination, sort: LwpSort, f
         error: undefined,
         count: count ?? 0,
     };
+}
+
+export const sbCreateSermon = async (sermon: Sermon): Promise<SingleSupabaseResponse<Sermon>> => {
+    const { data, error } = await supabase.from('sermons').insert(sermon).single<Sermon>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
+}
+
+export const sbUpdateSermon = async (sermon: Sermon): Promise<SingleSupabaseResponse<Sermon>> => {
+    const { data, error } = await supabase.from('sermons').update(sermon).eq('id', sermon.id).single<Sermon>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
 }
