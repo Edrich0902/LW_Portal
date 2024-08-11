@@ -1,6 +1,6 @@
 <script lang="ts">
     import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
-    import { filterSermons, initSermons, pageSermons, querySermons, sermonsStore, sortSermons } from "./sermons.store";
+    import { filterSermons, initSermons, pageSermons, sermonsStore, sortSermons } from "./sermons.store";
     import { Status, type Sermon } from "../../types";
     import { onMount } from "svelte";
     import { LwpLoader } from "../../components";
@@ -37,7 +37,10 @@
         sermon = {} as Sermon;
     }
 
-    const closeCallback = () => sermonModal = false;
+    const closeCallback = (reload: boolean): void => {
+        if (reload) initSermons();
+        sermonModal = false;
+    }
 
     // pagination
     const previous = async () => {
@@ -90,7 +93,9 @@
     </div>
 
     {#if status == Status.LOADING}
-        <LwpLoader message={"Loadig Sermons"} messageSize="xs" />
+        <div class="py-4">
+            <LwpLoader message={"Loadig Sermons"} messageSize="xs" />
+        </div>
     {/if}
 
     {#if status == Status.OK}
