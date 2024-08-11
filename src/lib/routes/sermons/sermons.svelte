@@ -135,5 +135,8 @@
     {/if}
 
     <!-- Create & Edit Modal -->
-    <SermonModal open={sermonModal} {sermon} {closeCallback} />
+    {#key sermon}
+        <!-- #key ensures rerender on sermon arg change -->
+        <SermonModal open={sermonModal} {sermon} {closeCallback} />
+    {/key}
 </div>
