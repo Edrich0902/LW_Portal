@@ -24,6 +24,7 @@
             title: yup.string().required('Sermon title required'),
             pastor: yup.string().required('Pastor required'),
             link: yup.string().required('Link required'),
+            description: yup.string(),
         }),
         onSubmit: values => {
             if (values.id) updateSermon(values);
