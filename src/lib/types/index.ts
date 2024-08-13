@@ -6,6 +6,7 @@ import type { LwpSort } from "./lwpSort";
 import type { SupabaseResponse, SingleSupabaseResponse } from "./supabase-response";
 import { ToastType, type ToastPosition, type LwpToast } from "./lwp-toast";
 import { type Sermon } from "./sermon/sermon";
+import { type User } from "./user/user";
 
 export {
     Status,
@@ -21,5 +22,6 @@ export type {
     LwpPagination,
     LwpSort,
     ToastPosition,
-    Sermon
+    Sermon,
+    User
 }
