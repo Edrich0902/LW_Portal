@@ -18,6 +18,7 @@
             title: sermon?.title ?? undefined,
             pastor: sermon?.pastor ?? undefined,
             link: sermon?.link ?? undefined,
+            description: sermon?.description ?? undefined,
         },
         validationSchema: yup.object<Sermon>().shape({
             title: yup.string().required('Sermon title required'),
@@ -62,6 +63,12 @@
             <span>Youtube Link</span>
             <Input on:change={handleChange} on:blur={handleChange} bind:value={$form.link} type="text" name="link" />
             {#if $errors.link}<Helper class="mt-2" color="red">{$errors.link}</Helper>{/if}
+        </Label>
+
+        <Label class="space-y-2">
+            <span>Description</span>
+            <Input on:change={handleChange} on:blur={handleChange} bind:value={$form.description} type="text" name="description" />
+            {#if $errors.description}<Helper class="mt-2" color="red">{$errors.description}</Helper>{/if}
         </Label>
 
         <div class="flex flex-row justify-end items-center">
