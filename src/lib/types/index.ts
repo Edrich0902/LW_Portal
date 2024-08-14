@@ -7,6 +7,7 @@ import type { SupabaseResponse, SingleSupabaseResponse } from "./supabase-respon
 import { ToastType, type ToastPosition, type LwpToast } from "./lwp-toast";
 import { type Sermon } from "./sermon/sermon";
 import { type User } from "./user/user";
+import { type Roleplayer } from "./roleplayer/roleplayer";
 
 export {
     Status,
@@ -23,5 +24,6 @@ export type {
     LwpSort,
     ToastPosition,
     Sermon,
-    User
+    User,
+    Roleplayer
 }

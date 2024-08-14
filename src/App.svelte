@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Router, Route, navigate } from "svelte-routing";
-  import { Auth, Dashboard, Sermons, Users } from "./lib/routes";
+  import { Auth, Dashboard, Roleplayers, Sermons, Users } from "./lib/routes";
   import { onMount } from "svelte";
   import { supabase } from "./supabaseClient";
   import Authguard from "./lib/gaurds/authguard.svelte";
@@ -63,10 +63,20 @@
       </Authguard>
     </Route>
 
+    <!-- Users Route -->
     <Route path="/users">
       <Authguard>
         <LwpPageContainer>
           <Users />
+        </LwpPageContainer>
+      </Authguard>
+    </Route>
+
+    <!-- Roleplayers Route -->
+    <Route path="/roleplayers">
+      <Authguard>
+        <LwpPageContainer>
+          <Roleplayers />
         </LwpPageContainer>
       </Authguard>
     </Route>
