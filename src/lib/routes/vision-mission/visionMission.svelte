@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Button, FloatingLabelInput, Heading, Hr, Input, Label, Spinner, Textarea } from "flowbite-svelte";
+    import { Button, Heading, Hr, Input, Label, Spinner, Textarea } from "flowbite-svelte";
     import { initVisionMission, updateVisionMission, visionMissionStore } from "./visionMission.store";
     import { createForm } from "svelte-forms-lib";
     import type { VisionMission } from "../../types";
