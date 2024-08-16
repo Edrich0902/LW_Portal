@@ -8,6 +8,7 @@ import { ToastType, type ToastPosition, type LwpToast } from "./lwp-toast";
 import { type Sermon } from "./sermon/sermon";
 import { type User } from "./user/user";
 import { type Roleplayer } from "./roleplayer/roleplayer";
+import type { MetaData, VisionMission } from "./meta-data/meta-data";
 
 export {
     Status,
@@ -25,5 +26,7 @@ export type {
     ToastPosition,
     Sermon,
     User,
-    Roleplayer
+    Roleplayer,
+    VisionMission,
+    MetaData,
 }
