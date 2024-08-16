@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { Button, FloatingLabelInput, Heading, Hr, Spinner } from "flowbite-svelte";
+    import { Button, FloatingLabelInput, Heading, Hr, Input, Label, Spinner, Textarea } from "flowbite-svelte";
     import { initVisionMission, updateVisionMission, visionMissionStore } from "./visionMission.store";
     import { createForm } from "svelte-forms-lib";
     import type { VisionMission } from "../../types";
     import { onMount } from "svelte";
-    import { Status } from "../../types";
-    import { LwpLoader } from "../../components";
+    import { Status, ToastType } from "../../types";
+    import { LwpLoader, toast } from "../../components";
 
     $: ({ data, status } = $visionMissionStore);
 
@@ -26,7 +26,10 @@
         initialValues: {
             items: data ?? [],
         },
-        onSubmit: values => updateVisionMission(values.items),
+        onSubmit: values => {
+            updateVisionMission(values.items)
+            if (status == Status.OK) toast({ message: "Vision & Mission Updated", type: ToastType.SUCCESS });
+        }
     });
 
     onMount(() => {
@@ -54,25 +57,19 @@
             {#each $form.items as item, i}
                 <Heading tag="h6">{visionMissionTitleMap[item.key]}</Heading>
 
-                <FloatingLabelInput
-                    on:change={handleChange}
-                    on:blur={handleChange}
-                    bind:value={$form.items[i].title}
-                    style="outlined"
-                    type="text"
-                    classLabel="bg-gray-50 dark:bg-gray-800">
-                    Title
-                </FloatingLabelInput>
+                <Label class="space-y-2">
+                    <span>Title</span>
+                    <Input on:change={handleChange} on:blur={handleChange} bind:value={$form.items[i].title}/>
+                </Label>
 
-                <FloatingLabelInput
-                    on:change={handleChange}
-                    on:blur={handleChange}
-                    bind:value={$form.items[i].content}
-                    style="outlined"
-                    type="text"
-                    classLabel="bg-gray-50 dark:bg-gray-800">
-                    Content
-                </FloatingLabelInput>
+                <Label class="space-y-2">
+                    <span>Content</span>
+                    <Textarea
+                        on:change={handleChange}
+                        on:blur={handleChange}
+                        bind:value={$form.items[i].content}
+                        rows="6"/>
+                </Label>
 
                 {#if i < 1}<Hr />{/if}
             {/each}
