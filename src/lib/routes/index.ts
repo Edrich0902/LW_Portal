@@ -4,6 +4,7 @@ import Sermons from "./sermons/sermons.svelte";
 import Users from "./users/users.svelte";
 import Roleplayers from "./roleplayers/roleplayers.svelte";
 import VisionMission from "./vision-mission/visionMission.svelte";
+import SocialMedia from "./social-media/socialMedia.svelte";
 
 export {
     Auth,
@@ -12,4 +13,5 @@ export {
     Users,
     Roleplayers,
     VisionMission,
+    SocialMedia,
 }
