@@ -66,6 +66,7 @@
                 <SidebarDropdownItem label="Vision & Mission" href="/vision-mission" active={activeUrl == '/vision-mission'} activeClass={dropdownActiveClass} />
                 <SidebarDropdownItem label="Roleplayers" href="/roleplayers" active={activeUrl == '/roleplayers'} activeClass={dropdownActiveClass} />
                 <SidebarDropdownItem label="Upcoming Events" href="/events" active={activeUrl == '/events'} activeClass={dropdownActiveClass} />
+                <SidebarDropdownItem label="Social Media" href="/social-media" active={activeUrl == '/social-media'} activeClass={dropdownActiveClass} />
 
             </SidebarDropdownWrapper>
 
