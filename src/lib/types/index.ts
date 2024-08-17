@@ -9,10 +9,12 @@ import { type Sermon } from "./sermon/sermon";
 import { type User } from "./user/user";
 import { type Roleplayer } from "./roleplayer/roleplayer";
 import type { MetaData, VisionMission } from "./meta-data/meta-data";
+import { type SocialMedia, SocialMediaType } from "./social-media/social-media";
 
 export {
     Status,
-    ToastType
+    ToastType,
+    SocialMediaType,
 }
 
 export type {
@@ -29,4 +31,5 @@ export type {
     Roleplayer,
     VisionMission,
     MetaData,
+    SocialMedia,
 }
