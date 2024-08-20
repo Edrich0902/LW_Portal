@@ -67,6 +67,7 @@
                 <SidebarDropdownItem label="Roleplayers" href="/roleplayers" active={activeUrl == '/roleplayers'} activeClass={dropdownActiveClass} />
                 <SidebarDropdownItem label="Upcoming Events" href="/events" active={activeUrl == '/events'} activeClass={dropdownActiveClass} />
                 <SidebarDropdownItem label="Social Media" href="/social-media" active={activeUrl == '/social-media'} activeClass={dropdownActiveClass} />
+                <SidebarDropdownItem label="Connect & Serve" href="/connect-serve" active={activeUrl == '/connect-serve'} activeClass={dropdownActiveClass} />
 
             </SidebarDropdownWrapper>
 

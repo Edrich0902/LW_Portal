@@ -10,11 +10,17 @@ import { type User } from "./user/user";
 import { type Roleplayer } from "./roleplayer/roleplayer";
 import type { MetaData, VisionMission } from "./meta-data/meta-data";
 import { type SocialMedia, SocialMediaType } from "./social-media/social-media";
+import { GroupType } from "./groupType";
+import { EventType } from "./eventType";
+import { type Group } from "./group/group";
+import { type Event } from "./event/event";
 
 export {
     Status,
     ToastType,
     SocialMediaType,
+    GroupType,
+    EventType,
 }
 
 export type {
@@ -32,4 +38,6 @@ export type {
     VisionMission,
     MetaData,
     SocialMedia,
+    Group,
+    Event,
 }
