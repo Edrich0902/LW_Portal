@@ -5,6 +5,7 @@ import Users from "./users/users.svelte";
 import Roleplayers from "./roleplayers/roleplayers.svelte";
 import VisionMission from "./vision-mission/visionMission.svelte";
 import SocialMedia from "./social-media/socialMedia.svelte";
+import ConnectServe from "./connect-serve/connectServe.svelte";
 
 export {
     Auth,
@@ -14,4 +15,5 @@ export {
     Roleplayers,
     VisionMission,
     SocialMedia,
+    ConnectServe,
 }
