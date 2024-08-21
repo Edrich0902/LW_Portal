@@ -30,7 +30,7 @@ export const sbQueryEvents = async (pagination: LwpPagination, sort: LwpSort, fi
 }
 
 export const sbCreateEvent = async (event: Event): Promise<SingleSupabaseResponse<Event>> => {
-    const { data, error } = await supabase.from('event').insert(event).single<Event>();
+    const { data, error } = await supabase.from('events').insert(event).single<Event>();
 
     if (error) {
         console.error(error.code, error.message);

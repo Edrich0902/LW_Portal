@@ -14,6 +14,7 @@ import { GroupType } from "./groupType";
 import { EventType } from "./eventType";
 import { type Group } from "./group/group";
 import { type Event } from "./event/event";
+import { Weekday } from "./weekday";
 
 export {
     Status,
@@ -21,6 +22,7 @@ export {
     SocialMediaType,
     GroupType,
     EventType,
+    Weekday,
 }
 
 export type {
