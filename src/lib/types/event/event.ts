@@ -1,3 +1,4 @@
+import type { EventCategory } from "../eventCategory";
 import type { EventType } from "../eventType";
 import type { Weekday } from "../weekday";
 
@@ -8,6 +9,7 @@ export type Event = {
     time: string;
     type: EventType;
     day: Weekday;
+    category: EventCategory;
     start_date?: string;
     end_date?: string;
     created_at?: string;

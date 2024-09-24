@@ -12,13 +12,14 @@
     $: ({ data, status, pagination, filter, sort } = $eventStore);
 
     const tableColumns: {label: string, value: string}[] = [
-        {label: 'Title', value: 'title'},
-        {label:'Description', value: 'description'},
-        {label:'Type', value: 'type'},
-        {label:'Day', value: 'day'},
-        {label:'Time', value: 'time'},
-        {label:'Created At', value: 'created_at'},
-        {label:'Updated At', value: 'updated_at'},
+        {label: 'Title',        value: 'title'},
+        {label: 'Description',  value: 'description'},
+        {label: 'Category',     value: 'category'},
+        {label: 'Type',         value: 'type'},
+        {label: 'Day',          value: 'day'},
+        {label: 'Time',         value: 'time'},
+        {label: 'Created At',   value: 'created_at'},
+        {label: 'Updated At',   value: 'updated_at'},
     ];
 
     let searchText = "";
@@ -113,6 +114,7 @@
                     <TableBodyRow class="cursor-pointer" on:click={() => selectEvent(event)}>
                         <TableBodyCell>{event.title}</TableBodyCell>
                         <TableBodyCell>{event.description}</TableBodyCell>
+                        <TableBodyCell>{event.category ?? 'N/A'}</TableBodyCell>
                         <TableBodyCell>{event.type}</TableBodyCell>
                         <TableBodyCell>{event.day}</TableBodyCell>
                         <TableBodyCell>{formatTime(event.time)}</TableBodyCell>

@@ -6,6 +6,7 @@
     import * as yup from "yup";
     import { toast } from "../../components";
     import { formatDate, formatTime } from "../../utils";
+    import { EventCategory } from "../../types/eventCategory";
 
     export let open: boolean = false;
     export let event: Event;
@@ -15,6 +16,7 @@
 
     const eventTypes = Object.values(EventType) as string[];
     const weekdays = Object.values(Weekday) as string[];
+    const categories = Object.values(EventCategory) as string[];
 
     const { form, errors, handleChange, handleSubmit } = createForm<Event>({
         initialValues: {
@@ -26,6 +28,7 @@
             time: formatTime(event?.time) ?? undefined,
             type: event?.type ?? undefined,
             day: event?.day ?? undefined,
+            category: event?.category ?? undefined,
         },
         validationSchema: yup.object<Event>().shape({
             title: yup.string().required('Title is required'),
@@ -35,6 +38,7 @@
             time: yup.string().required('Time is required'),
             type: yup.string().required('Type is required'),
             day: yup.string(),
+            category: yup.string().required('Category is required'),
         }),
         onSubmit: values => {
             if (values.id) updateEvent(values);
@@ -68,6 +72,16 @@
             <span>Description</span>
             <Textarea on:change={handleChange} on:blur={handleChange} bind:value={$form.description} rows="4" name="description"/>
             {#if $errors.description}<Helper class="mt-2" color="red">{$errors.description}</Helper>{/if}
+        </Label>
+
+        <Label class="space-y-2">
+            <span>Category</span>
+            <Select on:change={handleChange} on:blur={handleChange} bind:value={$form.category} name="category">
+                {#each categories as category}
+                    <option value={category}>{category}</option>
+                {/each}
+            </Select>
+            {#if $errors.category}<Helper class="mt-2" color="red">{$errors.category}</Helper>{/if}
         </Label>
 
         <Label class="space-y-2">
