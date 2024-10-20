@@ -7,12 +7,12 @@
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
     import { CheckCircleSolid, CloseCircleSolid } from "flowbite-svelte-icons";
-
-
+    import { CldImage } from "svelte-cloudinary";
 
     $: ({ data, status, pagination, filter, sort } = $usersStore);
 
     const tableColumns: {label: string, value: string}[] = [
+        {label: 'Profile Image', value: 'profile_public_id'},
         {label: 'First Name', value: 'first_name'},
         {label: 'Last Name', value: 'last_name'},
         {label: 'Email', value: 'email'},
@@ -20,8 +20,8 @@
         {label: 'Baptised', value: 'is_baptised'},
         {label: 'Member', value: 'is_member'},
         {label: 'Address', value: 'address'},
-        {label:'Created At', value: 'created_at'},
-        {label:'Updated At', value: 'updated_at'},
+        {label: 'Created At', value: 'created_at'},
+        {label: 'Updated At', value: 'updated_at'},
     ];
 
     let searchText = "";
@@ -93,6 +93,15 @@
             <TableBody>
                 {#each data as user}
                     <TableBodyRow class="cursor-pointer">
+                        <TableBodyCell>
+                            <CldImage
+                                src={user?.profile_public_id ?? "samples/cloudinary-icon"}
+                                loading="lazy"
+                                alt="Profile Picture"
+                                class="rounded-full"
+                                height={50}
+                                width={50} />
+                        </TableBodyCell>
                         <TableBodyCell>{user?.first_name ?? 'N/A'}</TableBodyCell>
                         <TableBodyCell>{user?.last_name ?? 'N/A'}</TableBodyCell>
                         <TableBodyCell>{user.email}</TableBodyCell>
