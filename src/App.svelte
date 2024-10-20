@@ -6,6 +6,12 @@
   import Authguard from "./lib/gaurds/authguard.svelte";
   import { Lwptoast, Lwpdrawer, LwpPageContainer } from "./lib/components";
   import { writable } from "svelte/store";
+  import { configureCloudinary } from "svelte-cloudinary";
+
+  // Cloudinary initialization and configuration - has to be outside onMount
+  configureCloudinary({
+    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME,
+  });
 
   onMount(async () => {
     // Check initial session
