@@ -2,9 +2,11 @@
     import { Button, Helper, Input, Label, Modal, Spinner } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import { Status, ToastType, type Roleplayer } from "../../types";
-    import { createRoleplayer, initRoleplayerModal, roleplayerModalStore, updateRoleplayer } from "./roleplayerModal.store";
+    import { createRoleplayer, initRoleplayerModal, roleplayerModalStore, updateRoleplayer, updateRoleplayerPicture } from "./roleplayerModal.store";
     import * as yup from "yup";
     import { toast } from "../../components";
+    import { CldImage, CldUploadWidget } from "svelte-cloudinary";
+
 
     export let open: boolean = false;
     export let roleplayer: Roleplayer;
@@ -41,9 +43,42 @@
             toast({message: 'Error Saving Roleplayer', type: ToastType.ERROR})
         }
     })
+
+    const handleUploadSuccess = async (results: any) => {
+        roleplayer.profile_public_id = results.info.public_id;
+        roleplayer.profile_url = results.info.url;
+        const uploadSuccess = await updateRoleplayerPicture(roleplayer);
+        if (uploadSuccess) toast({message: "Profile picture updated", type: ToastType.SUCCESS});
+    }
+
+    const handleUploadError = (error: string) => {
+        console.error("Cloudinary upload error", error);
+        toast({message: "Error uploading image", type: ToastType.ERROR});
+    }
 </script>
 
 <Modal title={roleplayer?.id ? 'Edit Roleplayer' : 'Add Roleplayer'} bind:open={open} on:close={() => closeCallback(false)}>
+    <div class="flex flex-col justify-center items-center space-y-6">
+        <CldImage
+            src={roleplayer?.profile_public_id ?? "samples/cloudinary-icon"}
+            loading="lazy"
+            alt="Profile Picture"
+            class="rounded-full"
+            height={150}
+            width={150} />
+
+        <CldUploadWidget
+            uploadPreset={import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET}
+            onSuccess={handleUploadSuccess}
+            onError={handleUploadError}
+            let:open
+            let:isLoading>
+            <Button on:click={() => open()} disabled={isLoading}>
+                Upload Profile Picture
+            </Button>
+        </CldUploadWidget>
+    </div>
+
     <form class="flex flex-col space-y-6" on:submit|preventDefault={handleSubmit}>
 
         <Label class="space-y-2">

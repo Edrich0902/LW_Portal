@@ -18,6 +18,31 @@ export const initRoleplayerModal = async () => {
     roleplayerModalStore.set(defaults);
 }
 
+export const updateRoleplayerPicture = async (roleplayer: Roleplayer): Promise<boolean> => {
+    roleplayerModalStore.update((state) => ({
+        ...state,
+    }));
+
+    const response = await sbUpdateRoleplayer(roleplayer);
+
+    if (response.error != undefined) {
+        roleplayerModalStore.update((state) => ({
+            ...state,
+            roleplayer: null,
+            status: Status.ERROR
+        }));
+
+        return false;
+    }
+
+    roleplayerModalStore.update((state) => ({
+        ...state,
+        roleplayer: response.data,
+    }));
+
+    return true;
+}
+
 export const updateRoleplayer = async (rolepayer: Roleplayer) => {
     roleplayerModalStore.update((state) => ({
         ...state,

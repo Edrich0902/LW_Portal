@@ -8,10 +8,12 @@
     import { formatDate } from "../../utils";
     import _ from "lodash";
     import RoleplayerModal from "./roleplayerModal.svelte";
+    import { CldImage } from "svelte-cloudinary";
 
     $: ({ data, status, pagination, filter, sort } = $roleplayersStore);
 
     const tableColumns: {label: string, value: string}[] = [
+        {label: 'Profile Image', value: 'profile_public_id'},
         {label:'Fullname', value: 'fullname'},
         {label: 'Title', value: 'title'},
         {label:'Created At', value: 'created_at'},
@@ -108,6 +110,15 @@
             <TableBody>
                 {#each data as roleplayer}
                     <TableBodyRow class="cursor-pointer" on:click={() => selectRoleplayer(roleplayer)}>
+                        <TableBodyCell>
+                            <CldImage
+                                src={roleplayer?.profile_public_id ?? "samples/cloudinary-icon"}
+                                loading="lazy"
+                                alt="Profile Picture"
+                                class="rounded-full"
+                                height={50}
+                                width={50} />
+                        </TableBodyCell>
                         <TableBodyCell>{roleplayer.fullname}</TableBodyCell>
                         <TableBodyCell>{roleplayer.title}</TableBodyCell>
                         <TableBodyCell>{formatDate(roleplayer.created_at ?? '')}</TableBodyCell>
