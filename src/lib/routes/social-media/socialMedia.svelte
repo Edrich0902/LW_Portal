@@ -8,11 +8,13 @@
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
     import SocialMediaModal from "./socialMediaModal.svelte";
+    import { CldImage } from "svelte-cloudinary";
 
     $: ({ data, status, pagination, filter, sort } = $socialMediaStore);
 
     const tableColumns: {label: string, value: string}[] = [
-        {label: 'Title', value: 'title'},
+        {label:'Banner', value: 'banner_public_id'},
+        {label:'Title', value: 'title'},
         {label:'Link', value: 'link'},
         {label:'Type', value: 'type'},
         {label:'Created At', value: 'created_at'},
@@ -109,6 +111,15 @@
             <TableBody>
                 {#each data as socialMedia}
                     <TableBodyRow class="cursor-pointer" on:click={() => selectSocialMedia(socialMedia)}>
+                        <TableBodyCell>
+                            <CldImage
+                                src={socialMedia?.banner_public_id ?? "samples/cloudinary-icon"}
+                                loading="lazy"
+                                alt="Banner"
+                                class="rounded-lg"
+                                height={50}
+                                width={50} />
+                        </TableBodyCell>
                         <TableBodyCell>{socialMedia.title}</TableBodyCell>
                         <TableBodyCell>{socialMedia.link}</TableBodyCell>
                         <TableBodyCell>{socialMedia.type}</TableBodyCell>

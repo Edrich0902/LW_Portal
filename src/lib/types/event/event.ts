@@ -12,6 +12,8 @@ export type Event = {
     category: EventCategory;
     start_date?: string;
     end_date?: string;
+    banner_url?: string;
+    banner_public_id?: string;
     created_at?: string;
     updated_at?: string;
 }

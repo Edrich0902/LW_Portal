@@ -7,7 +7,7 @@
     import { toast } from "../../components";
     import { CldImage, CldUploadWidget } from "svelte-cloudinary";
 
-
+    // TODO: somehow trigger a state update on the main index when the profile picture is updated
     export let open: boolean = false;
     export let roleplayer: Roleplayer;
     export let closeCallback: (reload: boolean) => void;

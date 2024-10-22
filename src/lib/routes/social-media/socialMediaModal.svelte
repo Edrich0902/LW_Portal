@@ -2,9 +2,10 @@
     import { Button, Helper, Input, Label, Modal, Select, Spinner } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import { SocialMediaType, Status, ToastType, type SocialMedia } from "../../types";
-    import { createSocialMedia, initSocialMediaModal, socialMediaModalStore, updateSocialMedia } from "./socialMediaModal.store";
+    import { createSocialMedia, initSocialMediaModal, socialMediaModalStore, updateSocialMedia, updateSocialMediaBanner } from "./socialMediaModal.store";
     import * as yup from "yup";
     import { toast } from "../../components";
+    import { CldImage, CldUploadWidget } from "svelte-cloudinary";
 
     export let open: boolean = false;
     export let socialMedia: SocialMedia;
@@ -43,9 +44,41 @@
             toast({message: 'Error Saving Social Media', type: ToastType.ERROR})
         }
     });
+
+    const handleUploadSuccess = async (results: any) => {
+        socialMedia.banner_public_id = results.info.public_id;
+        socialMedia.banner_url = results.info.url;
+        const uploadSuccess = await updateSocialMediaBanner(socialMedia);
+        if (uploadSuccess) toast({message: 'Banner updated', type: ToastType.SUCCESS});
+    }
+
+    const handleUploadError = (error: string) => {
+        console.error('Cloudinary upload error', error);
+        toast({message: 'Error Uploading Image', type: ToastType.ERROR});
+    }
 </script>
 
 <Modal title={socialMedia?.id ? 'Edit Social Media' : 'Add Social Media'} bind:open={open} on:close={() => closeCallback(false)}>
+    <div class="flex flex-col justify-center items-center space-y-6">
+        <CldImage
+            src={socialMedia?.banner_public_id ?? "samples/cloudinary-icon"}
+            loading="lazy"
+            alt="Banner"
+            class="rounded-lg"
+            height={250}
+            width={350} />
+
+        <CldUploadWidget
+            uploadPreset={import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET}
+            onSuccess={handleUploadSuccess}
+            onError={handleUploadError}
+            let:open
+            let:isLoading>
+            <Button on:click={() => open()} disabled={isLoading}>
+                Upload Banner
+            </Button>
+        </CldUploadWidget>
+    </div>
     <form class="flex flex-col space-y-6" on:submit|preventDefault={handleSubmit}>
 
         <Label class="space-y-2">

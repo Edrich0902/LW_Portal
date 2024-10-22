@@ -8,10 +8,12 @@
     import { PlusOutline } from "flowbite-svelte-icons";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
+    import { CldImage } from "svelte-cloudinary";
 
     $: ({ data, status, pagination, filter, sort } = $connectServeStore );
 
     const tableColumns: {label: string, value: string}[] = [
+        {label: 'Banner', value: 'banner_public_id' },
         {label: 'Title', value: 'title'},
         {label:'Description', value: 'description'},
         {label:'Type', value: 'type'},
@@ -111,6 +113,15 @@
             <TableBody>
                 {#each data as group}
                     <TableBodyRow class="cursor-pointer" on:click={() => selectConnectServeGroup(group)}>
+                        <TableBodyCell>
+                            <CldImage
+                                src={group?.banner_public_id ?? "samples/cloudinary-icon"}
+                                loading="lazy"
+                                alt="Banner"
+                                class="rounded-lg"
+                                height={50}
+                                width={50} />
+                        </TableBodyCell>
                         <TableBodyCell>{group.title}</TableBodyCell>
                         <TableBodyCell>{group.description}</TableBodyCell>
                         <TableBodyCell>{group.type}</TableBodyCell>

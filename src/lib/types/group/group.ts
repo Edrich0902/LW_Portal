@@ -7,6 +7,8 @@ export type Group = {
     type: GroupType;
     whatsappLink?: string;
     location?: string;
+    banner_url?: string;
+    banner_public_id?: string;
     updated_at?: string;
     created_at?: string;
 }

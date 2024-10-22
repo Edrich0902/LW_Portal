@@ -2,9 +2,10 @@
     import { Button, Helper, Input, Label, Modal, Select, Spinner, Textarea } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import { GroupType, Status, ToastType, type Group } from "../../types";
-    import { connectServeModalStore, createConnectServeGroup, initConnectServeModal, updateConnectServeGroup } from "./connectServeModal.store";
+    import { connectServeModalStore, createConnectServeGroup, initConnectServeModal, updateConnectServeBanner, updateConnectServeGroup } from "./connectServeModal.store";
     import * as yup from "yup";
     import { toast } from "../../components";
+    import { CldImage, CldUploadWidget } from "svelte-cloudinary";
 
     export let open: boolean = false;
     export let group: Group;
@@ -48,9 +49,40 @@
         }
     });
 
+    const handleUploadSuccess = async (results: any) => {
+        group.banner_public_id = results.info.public_id;
+        group.banner_url = results.info.url;
+        const uploadSuccess = await updateConnectServeBanner(group);
+        if (uploadSuccess) toast({message: 'Banner updated', type: ToastType.SUCCESS});
+    }
+
+    const handleUploadError = (error: string) => {
+        console.error('Cloudinary upload error', error);
+        toast({message: 'Error Uploading Image', type: ToastType.ERROR});
+    }
 </script>
 
 <Modal title={group?.id ? 'Edit Group' : 'Add Group'} bind:open={open} on:close={() => closeCallback(false)}>
+    <div class="flex flex-col justify-center items-center space-y-6">
+        <CldImage
+            src={group?.banner_public_id ?? "samples/cloudinary-icon"}
+            loading="lazy"
+            alt="Banner"
+            class="rounded-lg"
+            height={250}
+            width={350} />
+
+        <CldUploadWidget
+            uploadPreset={import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET}
+            onSuccess={handleUploadSuccess}
+            onError={handleUploadError}
+            let:open
+            let:isLoading>
+            <Button on:click={() => open()} disabled={isLoading}>
+                Upload Banner
+            </Button>
+        </CldUploadWidget>
+    </div>
     <form class="flex flex-col space-y-6" on:submit|preventDefault={handleSubmit}>
 
         <Label class="space-y-2">

@@ -3,6 +3,8 @@ export type SocialMedia = {
     title: string;
     link: string;
     type: SocialMediaType;
+    banner_url?: string;
+    banner_public_id?: string;
     created_at?: string;
     updated_at?: string;
 }

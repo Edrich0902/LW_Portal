@@ -18,6 +18,31 @@ export const initEventModal = async () => {
     eventModalStore.set(defaults);
 }
 
+export const updateEventBanner = async (event: Event): Promise<boolean> => {
+    eventModalStore.update((state) => ({
+        ...state,
+    }));
+
+    const response = await sbUpdateEvent(event);
+
+    if (response.error != undefined) {
+        eventModalStore.update((state) => ({
+            ...state,
+            event: null,
+            status: Status.ERROR
+        }));
+
+        return false;
+    }
+
+    eventModalStore.update((state) => ({
+        ...state,
+        event: response.data,
+    }));
+
+    return true;
+}
+
 export const updateEvent = async (event: Event) => {
     eventModalStore.update((state) => ({
         ...state,

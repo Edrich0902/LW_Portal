@@ -8,10 +8,12 @@
     import { LwpLoader } from "../../components";
     import { formatDate, formatTime } from "../../utils";
     import EventsModal from "./eventsModal.svelte";
+    import { CldImage } from "svelte-cloudinary";
 
     $: ({ data, status, pagination, filter, sort } = $eventStore);
 
     const tableColumns: {label: string, value: string}[] = [
+        {label: 'Banner',       value: 'banner_public_id' },
         {label: 'Title',        value: 'title'},
         {label: 'Description',  value: 'description'},
         {label: 'Category',     value: 'category'},
@@ -112,6 +114,15 @@
             <TableBody>
                 {#each data as event}
                     <TableBodyRow class="cursor-pointer" on:click={() => selectEvent(event)}>
+                        <TableBodyCell>
+                            <CldImage
+                                src={event?.banner_public_id ?? "samples/cloudinary-icon"}
+                                loading="lazy"
+                                alt="Event Banner"
+                                class="rounded-lg"
+                                height={50}
+                                width={50} />
+                        </TableBodyCell>
                         <TableBodyCell>{event.title}</TableBodyCell>
                         <TableBodyCell>{event.description}</TableBodyCell>
                         <TableBodyCell>{event.category ?? 'N/A'}</TableBodyCell>

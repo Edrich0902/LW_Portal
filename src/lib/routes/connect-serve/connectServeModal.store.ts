@@ -18,6 +18,31 @@ export const initConnectServeModal = async () => {
     connectServeModalStore.set(defaults);
 }
 
+export const updateConnectServeBanner = async (group: Group): Promise<boolean> => {
+    connectServeModalStore.update((state) => ({
+        ...state,
+    }));
+
+    const response = await sbUpdateConnectServeGroup(group);
+
+    if (response.error != undefined) {
+        connectServeModalStore.update((state) => ({
+            ...state,
+            group: null,
+            status: Status.ERROR,
+        }));
+
+        return false;
+    }
+
+    connectServeModalStore.update((state) => ({
+        ...state,
+        group: response.data,
+    }));
+
+    return true;
+}
+
 export const updateConnectServeGroup = async (group: Group) => {
     connectServeModalStore.update((state) => ({
         ...state,
