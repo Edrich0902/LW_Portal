@@ -1,10 +1,21 @@
 <script lang="ts">
-    import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import {
+        Button,
+        Dropdown, DropdownItem,
+        Pagination,
+        Search,
+        Table,
+        TableBody,
+        TableBodyCell,
+        TableBodyRow,
+        TableHead,
+        TableHeadCell
+    } from "flowbite-svelte";
     import { onMount } from "svelte";
     import { Status, type Event } from "../../types";
     import { eventStore, filterEvents, initEvents, pageEvents, sortEvents } from "./events.store";
     import _ from "lodash";
-    import { PlusOutline } from "flowbite-svelte-icons";
+    import {ChevronDownOutline, PlusOutline, RefreshOutline} from "flowbite-svelte-icons";
     import { LwpLoader } from "../../components";
     import { formatDate, formatTime } from "../../utils";
     import EventsModal from "./eventsModal.svelte";
@@ -82,6 +93,8 @@
         if (searchText.trim()) await filterEvents({searchText: searchText.trim()})
         else await initEvents();
     }, 200)
+
+    const refreshIndex = async () => await initEvents();
 </script>
 
 <svelte:head>
@@ -91,10 +104,15 @@
 <div>
     <div class="flex flex-row justify-between items-center gap-x-2">
         <Search on:input={searchEvents} bind:value={searchText} size="sm" placeholder="Search Events" />
-        <Button size="sm" on:click={newEvent}>
-            <PlusOutline />
-            Add
-        </Button>
+        <Button size="xs">Actions <ChevronDownOutline /></Button>
+        <Dropdown>
+            <DropdownItem on:click={newEvent}>
+                <div class="flex flex-row gap-1"><PlusOutline /> Add</div>
+            </DropdownItem>
+            <DropdownItem on:click={refreshIndex}>
+                <div class="flex flex-row gap-1"><RefreshOutline /> Refresh Index</div>
+            </DropdownItem>
+        </Dropdown>
     </div>
 
     {#if status == Status.LOADING}

@@ -1,9 +1,20 @@
 <script lang="ts">
-    import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import {
+        Button,
+        Dropdown, DropdownItem,
+        Pagination,
+        Search,
+        Table,
+        TableBody,
+        TableBodyCell,
+        TableBodyRow,
+        TableHead,
+        TableHeadCell
+    } from "flowbite-svelte";
     import { onMount } from "svelte";
     import { type Roleplayer, Status } from "../../types";
     import { filterRoleplayers, initRoleplayers, pageRoleplayers, roleplayersStore, sortRoleplayers } from "./roleplayers.store";
-    import { PlusOutline } from "flowbite-svelte-icons";
+    import {ChevronDownOutline, PlusOutline, RefreshOutline} from "flowbite-svelte-icons";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
     import _ from "lodash";
@@ -78,6 +89,8 @@
         if (searchText.trim()) await filterRoleplayers({searchText: searchText.trim()})
         else await initRoleplayers();
     }, 200)
+
+    const refreshIndex = async () => await initRoleplayers();
 </script>
 
 <svelte:head>
@@ -87,10 +100,15 @@
 <div>
     <div class="flex flex-row justify-between items-center gap-x-2">
         <Search on:input={searchRoleplayers} bind:value={searchText} size="sm" placeholder="Search Roleplayers" />
-        <Button size="sm" on:click={newRoleplayer}>
-            <PlusOutline />
-            Add
-        </Button>
+        <Button size="xs">Actions <ChevronDownOutline /></Button>
+        <Dropdown>
+            <DropdownItem on:click={newRoleplayer}>
+                <div class="flex flex-row gap-1"><PlusOutline /> Add</div>
+            </DropdownItem>
+            <DropdownItem on:click={refreshIndex}>
+                <div class="flex flex-row gap-1"><RefreshOutline /> Refresh Index</div>
+            </DropdownItem>
+        </Dropdown>
     </div>
 
     {#if status == Status.LOADING}

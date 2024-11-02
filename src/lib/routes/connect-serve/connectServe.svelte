@@ -1,11 +1,22 @@
 <script lang="ts">
-    import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import {
+        Button,
+        Dropdown, DropdownItem,
+        Pagination,
+        Search,
+        Table,
+        TableBody,
+        TableBodyCell,
+        TableBodyRow,
+        TableHead,
+        TableHeadCell
+    } from "flowbite-svelte";
     import { connectServeStore, filterConnectServeGroups, initConnectServe, pageConnectServeGroups, sortConnectServeGroups } from "./connectServe.store";
     import { onMount } from "svelte";
     import _ from "lodash";
     import ConnectServeModal from "./connectServeModal.svelte";
     import { Status, type Group } from "../../types";
-    import { PlusOutline } from "flowbite-svelte-icons";
+    import {ChevronDownOutline, PlusOutline, RefreshOutline} from "flowbite-svelte-icons";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
     import { CldImage } from "svelte-cloudinary";
@@ -81,6 +92,8 @@
         if (searchText.trim()) await filterConnectServeGroups({searchText: searchText.trim()})
         else await initConnectServe();
     }, 200)
+
+    const refreshIndex = async () => await initConnectServe();
 </script>
 
 <svelte:head>
@@ -90,10 +103,15 @@
 <div>
     <div class="flex flex-row justify-between items-center gap-x-2">
         <Search on:input={searchConnectServeGroups} bind:value={searchText} size="sm" placeholder="Search Groups" />
-        <Button size="sm" on:click={newConnectServeGroup}>
-            <PlusOutline />
-            Add
-        </Button>
+        <Button size="xs">Actions <ChevronDownOutline /></Button>
+        <Dropdown>
+            <DropdownItem on:click={newConnectServeGroup}>
+                <div class="flex flex-row gap-1"><PlusOutline /> Add</div>
+            </DropdownItem>
+            <DropdownItem on:click={refreshIndex}>
+                <div class="flex flex-row gap-1"><RefreshOutline /> Refresh Index</div>
+            </DropdownItem>
+        </Dropdown>
     </div>
 
     {#if status == Status.LOADING}

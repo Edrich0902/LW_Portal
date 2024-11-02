@@ -6,7 +6,7 @@
     import { Status } from "../../types";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
-    import { CheckCircleSolid, CloseCircleSolid } from "flowbite-svelte-icons";
+    import {CheckCircleSolid, CloseCircleSolid, RefreshOutline} from "flowbite-svelte-icons";
     import { CldImage } from "svelte-cloudinary";
 
     $: ({ data, status, pagination, filter, sort } = $usersStore);
@@ -65,6 +65,8 @@
         if (searchText.trim()) await filterUsers({searchText: searchText.trim()})
         else await initUsers();
     }, 200)
+
+    const refreshIndex = async () => await initUsers();
 </script>
 
 <svelte:head>
@@ -74,6 +76,9 @@
 <div>
     <div class="flex flex-row justify-between items-center gap-x-2">
         <Search on:input={searchUsers} bind:value={searchText} size="sm" placeholder="Search Users" />
+        <Button size="xs" outline on:click={refreshIndex}>
+            <RefreshOutline />
+        </Button>
     </div>
 
     {#if status == Status.LOADING}

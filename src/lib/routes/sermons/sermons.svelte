@@ -1,12 +1,23 @@
 <script lang="ts">
-    import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import {
+        Button,
+        Dropdown, DropdownItem,
+        Pagination,
+        Search,
+        Table,
+        TableBody,
+        TableBodyCell,
+        TableBodyRow,
+        TableHead,
+        TableHeadCell
+    } from "flowbite-svelte";
     import { filterSermons, initSermons, pageSermons, sermonsStore, sortSermons } from "./sermons.store";
     import { Status, type Sermon } from "../../types";
     import { onMount } from "svelte";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
     import _ from "lodash";
-    import { PlusOutline } from "flowbite-svelte-icons";
+    import {ChevronDownOutline, PlusOutline, RefreshOutline} from "flowbite-svelte-icons";
     import SermonModal from "./sermonModal.svelte";
 
     $: ({ data, status, pagination, filter, sort } = $sermonsStore);
@@ -77,6 +88,8 @@
         if (searchText.trim()) await filterSermons({searchText: searchText.trim()})
         else await initSermons();
     }, 200)
+
+    const refreshIndex = async () => await initSermons();
 </script>
 
 <svelte:head>
@@ -86,10 +99,15 @@
 <div>
     <div class="flex flex-row justify-between items-center gap-x-2">
         <Search on:input={searchSermons} bind:value={searchText} size="sm" placeholder="Search Sermons" />
-        <Button size="sm" on:click={newSermon}>
-            <PlusOutline />
-            Add
-        </Button>
+        <Button size="xs">Actions <ChevronDownOutline /></Button>
+        <Dropdown>
+            <DropdownItem on:click={newSermon}>
+                <div class="flex flex-row gap-1"><PlusOutline /> Add</div>
+            </DropdownItem>
+            <DropdownItem on:click={refreshIndex}>
+                <div class="flex flex-row gap-1"><RefreshOutline /> Refresh Index</div>
+            </DropdownItem>
+        </Dropdown>
     </div>
 
     {#if status == Status.LOADING}

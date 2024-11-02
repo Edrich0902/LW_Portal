@@ -1,10 +1,21 @@
 <script lang="ts">
-    import { Button, Pagination, Search, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from "flowbite-svelte";
+    import {
+        Button,
+        Dropdown, DropdownItem,
+        Pagination,
+        Search,
+        Table,
+        TableBody,
+        TableBodyCell,
+        TableBodyRow,
+        TableHead,
+        TableHeadCell
+    } from "flowbite-svelte";
     import { filterSocialMedia, initSocialMedia, pageSocialMedia, socialMediaStore, sortSocialMedia } from "./socialMedia.store";
     import { Status, type SocialMedia } from "../../types";
     import { onMount } from "svelte";
     import _ from "lodash";
-    import { PlusOutline } from "flowbite-svelte-icons";
+    import {ChevronDownOutline, PlusOutline, RefreshOutline} from "flowbite-svelte-icons";
     import { LwpLoader } from "../../components";
     import { formatDate } from "../../utils";
     import SocialMediaModal from "./socialMediaModal.svelte";
@@ -79,6 +90,8 @@
         if (searchText.trim()) await filterSocialMedia({searchText: searchText.trim()})
         else await initSocialMedia();
     }, 200)
+
+    const refreshIndex = async () => await initSocialMedia();
 </script>
 
 <svelte:head>
@@ -88,10 +101,15 @@
 <div>
     <div class="flex flex-row justify-between items-center gap-x-2">
         <Search on:input={searchSocialMedia} bind:value={searchText} size="sm" placeholder="Search Social Media" />
-        <Button size="sm" on:click={newSocialMedia}>
-            <PlusOutline />
-            Add
-        </Button>
+        <Button size="xs">Actions <ChevronDownOutline /></Button>
+        <Dropdown>
+            <DropdownItem on:click={newSocialMedia}>
+                <div class="flex flex-row gap-1"><PlusOutline /> Add</div>
+            </DropdownItem>
+            <DropdownItem on:click={refreshIndex}>
+                <div class="flex flex-row gap-1"><RefreshOutline /> Refresh Index</div>
+            </DropdownItem>
+        </Dropdown>
     </div>
 
     {#if status == Status.LOADING}
