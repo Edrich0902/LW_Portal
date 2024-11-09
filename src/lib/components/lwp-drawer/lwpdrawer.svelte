@@ -1,6 +1,12 @@
 <script lang="ts">
     import { Sidebar, SidebarGroup, SidebarWrapper, SidebarItem, DarkMode, SidebarBrand, Hr, SidebarDropdownWrapper, SidebarDropdownItem } from "flowbite-svelte";
-    import { ArrowLeftToBracketOutline, ChartPieSolid, FolderSolid, UsersGroupSolid } from "flowbite-svelte-icons";
+    import {
+        ArrowLeftToBracketOutline,
+        BellActiveSolid,
+        ChartPieSolid,
+        FolderSolid,
+        UsersGroupSolid
+    } from "flowbite-svelte-icons";
     import { supabaseSignOut } from "../../services/auth-service";
     import { navigate } from "svelte-routing";
     import { onMount } from "svelte";
@@ -54,6 +60,12 @@
             <SidebarItem label="Users" href="/users">
                 <svelte:fragment slot="icon">
                     <UsersGroupSolid />
+                </svelte:fragment>
+            </SidebarItem>
+
+            <SidebarItem label="Announcements" href="/announcements">
+                <svelte:fragment slot="icon">
+                    <BellActiveSolid />
                 </svelte:fragment>
             </SidebarItem>
 

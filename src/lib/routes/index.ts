@@ -7,6 +7,7 @@ import VisionMission from "./vision-mission/visionMission.svelte";
 import SocialMedia from "./social-media/socialMedia.svelte";
 import ConnectServe from "./connect-serve/connectServe.svelte";
 import Events from "./events/events.svelte";
+import Announcements from './announcements/announcements.svelte';
 
 export {
     Auth,
@@ -18,4 +19,5 @@ export {
     SocialMedia,
     ConnectServe,
     Events,
+    Announcements,
 }
