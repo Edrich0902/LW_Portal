@@ -6,11 +6,26 @@
     import { Status, ToastType } from "../../types";
     import { navigate } from "svelte-routing";
     import { toast } from "../../components";
+    import {supabase} from "../../../supabaseClient";
 
     $: ({ status, response } = $authStore);
 
-    authStore.subscribe((value) => {
+    const isAdmin = async (userId: string): Promise<boolean> => {
+        const response = await supabase.from('user_profile_view').select('role').eq('id', userId).single<{role: string}>();
+        return response.data?.role === 'super_admin';
+    }
+
+    authStore.subscribe(async (value) => {
         if (value.response.success && value.response.message) {
+            const sessionResponse = await supabase.auth.getSession()
+            if (!sessionResponse.data.session) return;
+
+            if (!await isAdmin(sessionResponse.data.session.user.id)) {
+                toast({message: "Only Admin Users Allowed", type: ToastType.ERROR});
+                await supabase.auth.signOut(); // auto sign out user if not admin
+                return;
+            }
+
             toast({message: value.response.message, type: ToastType.SUCCESS});
             navigate("/dashboard", {replace: true})
         } else if (!value.response.success && value.response.message) {
