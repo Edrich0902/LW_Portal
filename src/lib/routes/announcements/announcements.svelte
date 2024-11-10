@@ -9,7 +9,7 @@
         TableBodyCell,
         TableBodyRow,
         TableHead,
-        TableHeadCell
+        TableHeadCell, Tooltip
     } from "flowbite-svelte";
     import {Status, type Announcement, AnnouncementState} from "../../types";
     import { onMount } from "svelte";
@@ -27,24 +27,27 @@
         announcementsStore,
         filterAnnouncements,
         initAnnouncements,
-        pageAnnouncements,
+        pageAnnouncements, sendAnnouncement,
         sortAnnouncements
     } from "./announcements.store";
     import {CldImage} from "svelte-cloudinary";
     import AnnouncementsModal from "./announcementsModal.svelte";
+    import {LwpConfirmation} from "../../components/index.js";
 
     $: ({ data, status, pagination, filter, sort } = $announcementsStore);
 
-    const tableColumns: {label: string, value: string}[] = [
-        {label: 'Image', value: 'image_public_id'},
-        {label: 'Sent', value: 'state'},
-        {label: 'Title', value: 'title'},
-        {label:'Created At', value: 'created_at'},
-        {label:'Updated At', value: 'updated_at'},
+    const tableColumns: {label: string, value: string, sortable?: boolean}[] = [
+        {label: 'Image', value: 'image_public_id', sortable: true},
+        {label: 'Sent', value: 'state', sortable: true},
+        {label: 'Title', value: 'title', sortable: true},
+        {label:'Created At', value: 'created_at', sortable: true},
+        {label:'Updated At', value: 'updated_at', sortable: true},
+        {label: '', value: '', sortable: false},
     ];
 
     let searchText = "";
     let announcementModal = false;
+    let sendConfirmationModal = false;
     let announcement: Announcement;
 
     onMount(() => {
@@ -102,6 +105,17 @@
         else await initAnnouncements();
     }, 200)
 
+    const confirmAnnouncementSend = (data: Announcement) => {
+        event.stopPropagation();
+        announcement = data;
+        sendConfirmationModal = true;
+    }
+
+    const handleAnnouncementSend = async () => {
+        await sendAnnouncement(announcement);
+        announcement = {} as Announcement;
+    }
+
     const refreshIndex = async () => await initAnnouncements();
 </script>
 
@@ -133,7 +147,7 @@
         <Table striped hoverable>
             <TableHead>
                 {#each tableColumns as column}
-                    <TableHeadCell class="cursor-pointer" on:click={() => sortAnnouncementsIndex(column.value)}>{column.label}</TableHeadCell>
+                    <TableHeadCell class="cursor-pointer" on:click={() => column.sortable ? sortAnnouncementsIndex(column.value) : null}>{column.label}</TableHeadCell>
                 {/each}
             </TableHead>
 
@@ -157,6 +171,15 @@
                         <TableBodyCell>{announcement.title}</TableBodyCell>
                         <TableBodyCell>{formatDate(announcement.created_at ?? '')}</TableBodyCell>
                         <TableBodyCell>{formatDate(announcement.updated_at ?? '')}</TableBodyCell>
+                        <TableBodyCell>
+                            <Button disabled={announcement.state === AnnouncementState.SENT}
+                                on:click={() => confirmAnnouncementSend(announcement)}>
+                                {announcement.state === AnnouncementState.SENT ? 'Already Sent' : 'Send'}
+                            </Button>
+                            {#if announcement.state !== AnnouncementState.SENT}
+                                <Tooltip>Send Announcement</Tooltip>
+                            {/if}
+                        </TableBodyCell>
                     </TableBodyRow>
                 {/each}
             </TableBody>
@@ -182,4 +205,10 @@
         <!-- #key ensures rerender on sermon arg change -->
         <AnnouncementsModal open={announcementModal} {announcement} {closeCallback} />
     {/key}
+
+    <LwpConfirmation
+        title="Send Announcement?"
+        bind:open={sendConfirmationModal}
+        confirm={handleAnnouncementSend}
+    />
 </div>

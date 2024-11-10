@@ -1,6 +1,15 @@
-import {type Announcement, type LwpFilter, type LwpPagination, type LwpSort, Status} from "../../types";
+import {
+    type Announcement,
+    AnnouncementState,
+    type LwpFilter,
+    type LwpPagination,
+    type LwpSort,
+    Status,
+    ToastType
+} from "../../types";
 import {get, writable} from "svelte/store";
-import {sbQueryAnnouncements} from "../../services/announcement-service";
+import {sbQueryAnnouncements, sbUpdateAnnouncement} from "../../services/announcement-service";
+import {toast} from "../../components";
 
 export type AnnouncementsStoreModel = {
     status: Status;
@@ -68,6 +77,29 @@ export const queryAnnouncements = async () => {
         },
         status: Status.OK
     }))
+}
+
+export const sendAnnouncement = async (announcement: Announcement) => {
+    announcementsStore.update((state) => ({
+       ...state,
+       status: Status.LOADING
+    }))
+
+    announcement.state = AnnouncementState.SENT;
+    const response = await sbUpdateAnnouncement(announcement);
+
+    if (response.error) {
+        announcementsStore.update((state) => ({
+            ...state,
+            status: Status.OK
+        }))
+
+        toast({message: 'Error Sending Announcement', type: ToastType.ERROR})
+    } else {
+        toast({message: 'Announcement Sent', type: ToastType.SUCCESS})
+    }
+
+    await queryAnnouncements();
 }
 
 // page announcements function
