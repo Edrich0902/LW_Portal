@@ -4,10 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "vite -m development",
+    "build": "vite build -m development",
     "preview": "vite preview",
-    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json"
+    "check": "svelte-check --tsconfig ./tsconfig.json && tsc -p tsconfig.node.json",
+    "stage": "vite build -m staging",
+    "prod": "vite build -m production"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
