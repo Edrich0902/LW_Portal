@@ -53,7 +53,7 @@
 
 <div class="flex flex-col items-center justify-center px-6 py-8 mx-auto my-auto">
     <div class="flex items-center mb-6 text-2xl font-semibold text-primary-900 dark:text-white">
-        <img class="w-10 h-10 mr-2 rounded-full" src="../../lwp_icon.png" alt="LWP Logo" />
+        <img class="w-10 h-10 mr-2 rounded-full" src="/lwp_icon.png" alt="LWP Logo" />
         LWP Admin
     </div>
     <Card>

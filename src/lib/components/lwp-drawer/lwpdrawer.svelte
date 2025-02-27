@@ -20,7 +20,7 @@
     let site = {
         name: "LWP Admin",
         href: '/dashboard',
-        img: '../../../lwp_icon.png'
+        img: '/lwp_icon.png'
     }
 
     const logout = async (event: any) => {
