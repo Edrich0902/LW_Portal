@@ -3,12 +3,14 @@
     import { Status, ToastType, type Sermon } from "../../types";
     import { createForm } from "svelte-forms-lib";
     import * as yup from "yup";
-    import { createSermon, initSermonModal, sermonModalStore, updateSermon } from "./sermonModal.store";
-    import { toast } from "../../components";
+    import {createSermon, deleteSermon, initSermonModal, sermonModalStore, updateSermon} from "./sermonModal.store";
+    import {LwpConfirmation, toast} from "../../components";
 
     export let open: boolean = false;
     export let sermon: Sermon;
     export let closeCallback: (reload: boolean) => void;
+
+    let confirmationModal = false;
 
     $: ({ status } = $sermonModalStore);
 
@@ -32,6 +34,12 @@
         }
     });
 
+    const confirmDelete = () => confirmationModal = true
+    const attemptDelete = async () => {
+        await deleteSermon(sermon);
+        confirmationModal = false;
+    }
+
     sermonModalStore.subscribe(state => {
         if (state.status == Status.OK) {
             toast({message: 'Sermon Saved', type: ToastType.SUCCESS})
@@ -39,8 +47,14 @@
 
             initSermonModal();
         }
+        if (state.status == Status.DELETED) {
+            toast({message: 'Sermon Deleted', type: ToastType.SUCCESS})
+            closeCallback(true);
+
+            initSermonModal();
+        }
         if (state.status == Status.ERROR) {
-            toast({message: 'Error Saving Sermon', type: ToastType.ERROR})
+            toast({message: 'Error Performing Action', type: ToastType.ERROR})
         }
     })
 </script>
@@ -72,14 +86,23 @@
             {#if $errors.description}<Helper class="mt-2" color="red">{$errors.description}</Helper>{/if}
         </Label>
 
-        <div class="flex flex-row justify-end items-center">
-            <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
-            <Button type="submit">
-                {#if status == Status.LOADING}
-                    <Spinner class="me-3" size="4" color="white" />
-                {/if}
-                Save
-            </Button>
+        <div class="flex flex-row justify-between items-center">
+            <Button on:click={() => confirmDelete()} color="red">Delete</Button>
+            <div>
+                <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
+                <Button type="submit">
+                    {#if status === Status.LOADING}
+                        <Spinner class="me-3" size="4" color="white" />
+                    {/if}
+                    Save
+                </Button>
+            </div>
         </div>
     </form>
+
+    <LwpConfirmation
+        title="Delete Sermon?"
+        bind:open={confirmationModal}
+        confirm={attemptDelete}
+    />
 </Modal>
