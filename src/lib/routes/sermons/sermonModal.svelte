@@ -87,7 +87,12 @@
         </Label>
 
         <div class="flex flex-row justify-between items-center">
-            <Button on:click={() => confirmDelete()} color="red">Delete</Button>
+            <Button
+                on:click={() => confirmDelete()}
+                color="red"
+                disabled={sermon.id === undefined}>
+                Delete
+            </Button>
             <div>
                 <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
                 <Button type="submit">

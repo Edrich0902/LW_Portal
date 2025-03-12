@@ -2,14 +2,24 @@
     import { Button, Helper, Input, Label, Modal, Select, Spinner } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import { SocialMediaType, Status, ToastType, type SocialMedia } from "../../types";
-    import { createSocialMedia, initSocialMediaModal, socialMediaModalStore, updateSocialMedia, updateSocialMediaBanner } from "./socialMediaModal.store";
+    import {
+        createSocialMedia,
+        deleteSocialMedia,
+        initSocialMediaModal,
+        socialMediaModalStore,
+        updateSocialMedia,
+        updateSocialMediaBanner
+    } from "./socialMediaModal.store";
     import * as yup from "yup";
     import { toast } from "../../components";
     import { CldImage, CldUploadWidget } from "svelte-cloudinary";
+    import { LwpConfirmation } from "../../components/index.js";
 
     export let open: boolean = false;
     export let socialMedia: SocialMedia;
     export let closeCallback: (reload: boolean) => void;
+
+    let confirmationModal = false;
 
     $: ({ status } = $socialMediaModalStore);
 
@@ -33,6 +43,12 @@
         }
     });
 
+    const confirmDelete = () => confirmationModal = true;
+    const attemptDelete = async () => {
+        await deleteSocialMedia(socialMedia);
+        confirmationModal = false;
+    }
+
     socialMediaModalStore.subscribe(state => {
         if (state.status == Status.OK) {
             toast({ message: 'Social Media Saved', type: ToastType.SUCCESS });
@@ -40,8 +56,16 @@
 
             initSocialMediaModal();
         }
+
+        if (state.status == Status.DELETED) {
+            toast({message: 'Social Media Deleted', type: ToastType.SUCCESS})
+            closeCallback(true);
+
+            initSocialMediaModal();
+        }
+
         if (state.status == Status.ERROR) {
-            toast({message: 'Error Saving Social Media', type: ToastType.ERROR})
+            toast({message: 'Error Performing Action', type: ToastType.ERROR})
         }
     });
 
@@ -103,14 +127,28 @@
             {#if $errors.type}<Helper class="mt-2" color="red">{$errors.type}</Helper>{/if}
         </Label>
 
-        <div class="flex flex-row justify-end items-center">
-            <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
-            <Button type="submit">
-                {#if status == Status.LOADING}
-                    <Spinner class="me-3" size="4" color="white" />
-                {/if}
-                Save
+        <div class="flex flex-row justify-between items-center">
+            <Button
+                on:click={() => confirmDelete()}
+                color="red"
+                disabled={socialMedia.id === undefined}>
+                Delete
             </Button>
+            <div>
+                <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
+                <Button type="submit">
+                    {#if status == Status.LOADING}
+                        <Spinner class="me-3" size="4" color="white" />
+                    {/if}
+                    Save
+                </Button>
+            </div>
         </div>
     </form>
+
+    <LwpConfirmation
+        title="Delete Social Media"
+        bind:open={confirmationModal}
+        confirm={attemptDelete}
+    />
 </Modal>
