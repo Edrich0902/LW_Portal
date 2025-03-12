@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import { Status, type Roleplayer } from "../../types"
-import { sbCreateRoleplayer, sbUpdateRoleplayer } from "../../services/roleplayer-service";
+import {sbCreateRoleplayer, sbDeleteRoleplayer, sbUpdateRoleplayer} from "../../services/roleplayer-service";
 
 export type RoleplayerModalStoreModel = {
     status: Status;
@@ -85,6 +85,29 @@ export const createRoleplayer = async (roleplayer: Roleplayer) => {
             ...state,
             roleplayer: response.data,
             status: Status.OK
+        }));
+    }
+}
+
+export const deleteRoleplayer = async (roleplayer: Roleplayer) => {
+    roleplayerModalStore.update((state) => ({
+        ...state,
+        status: Status.LOADING
+    }));
+
+    const response = await sbDeleteRoleplayer(roleplayer);
+
+    if (response.error != undefined) {
+        roleplayerModalStore.update((state) => ({
+            ...state,
+            roleplayer: null,
+            status: Status.ERROR
+        }));
+    } else {
+        roleplayerModalStore.update((state) => ({
+            ...state,
+            roleplayer: null,
+            status: Status.DELETED
         }));
     }
 }

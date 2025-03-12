@@ -62,3 +62,20 @@ export const sbUpdateRoleplayer = async (roleplayer: Roleplayer): Promise<Single
         error: undefined
     }
 }
+
+export const sbDeleteRoleplayer = async (roleplayer: Roleplayer): Promise<SingleSupabaseResponse<Roleplayer>> => {
+    const { data, error } = await supabase.from('roleplayers').delete().eq('id', roleplayer.id).single<Roleplayer>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
+}

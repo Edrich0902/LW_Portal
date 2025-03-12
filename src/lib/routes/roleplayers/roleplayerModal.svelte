@@ -2,15 +2,24 @@
     import { Button, Helper, Input, Label, Modal, Spinner } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import { Status, ToastType, type Roleplayer } from "../../types";
-    import { createRoleplayer, initRoleplayerModal, roleplayerModalStore, updateRoleplayer, updateRoleplayerPicture } from "./roleplayerModal.store";
+    import {
+        createRoleplayer,
+        deleteRoleplayer,
+        initRoleplayerModal,
+        roleplayerModalStore,
+        updateRoleplayer,
+        updateRoleplayerPicture
+    } from "./roleplayerModal.store";
     import * as yup from "yup";
-    import { toast } from "../../components";
+    import { LwpConfirmation, toast } from "../../components";
     import { CldImage, CldUploadWidget } from "svelte-cloudinary";
 
     // TODO: somehow trigger a state update on the main index when the profile picture is updated
     export let open: boolean = false;
     export let roleplayer: Roleplayer;
     export let closeCallback: (reload: boolean) => void;
+
+    let confirmationModal = false;
 
     $: ({ status } = $roleplayerModalStore);
 
@@ -32,15 +41,29 @@
         }
     });
 
+    const confirmDelete = () => confirmationModal = true
+    const attemptDelete = async () => {
+        await deleteRoleplayer(roleplayer);
+        confirmationModal = false;
+    }
+
     roleplayerModalStore.subscribe(state => {
         if (state.status == Status.OK) {
-            toast({message: 'Roleplayer Saved', type: ToastType.SUCCESS})
+            toast({message: 'Roleplayer Saved', type: ToastType.SUCCESS});
             closeCallback(true);
 
             initRoleplayerModal();
         }
+
+        if (state.status == Status.DELETED) {
+            toast({message: 'Roleplayer Deleted', type: ToastType.SUCCESS});
+            closeCallback(true);
+
+            initRoleplayerModal();
+        }
+
         if (state.status == Status.ERROR) {
-            toast({message: 'Error Saving Roleplayer', type: ToastType.ERROR})
+            toast({message: 'Error Performing Action', type: ToastType.ERROR});
         }
     })
 
@@ -99,14 +122,28 @@
             {#if $errors.bio}<Helper class="mt-2" color="red">{$errors.bio}</Helper>{/if}
         </Label>
 
-        <div class="flex flex-row justify-end items-center">
-            <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
-            <Button type="submit">
-                {#if status == Status.LOADING}
-                    <Spinner class="me-3" size="4" color="white" />
-                {/if}
-                Save
+        <div class="flex flex-row justify-between items-center">
+            <Button
+                on:click={() => confirmDelete()}
+                color="red"
+                disabled={roleplayer.id === undefined}>
+                Delete
             </Button>
+            <div>
+                <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
+                <Button type="submit">
+                    {#if status === Status.LOADING}
+                        <Spinner class="me-3" size="4" color="white" />
+                    {/if}
+                    Save
+                </Button>
+            </div>
         </div>
     </form>
+
+    <LwpConfirmation
+        title="Delete Roleplayer?"
+        bind:open={confirmationModal}
+        confirm={attemptDelete}
+    />
 </Modal>
