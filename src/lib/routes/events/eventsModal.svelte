@@ -1,17 +1,26 @@
 <script lang="ts">
-    import { Button, Helper, Input, Label, Modal, Select, Spinner, Textarea } from "flowbite-svelte";
-    import { createForm } from "svelte-forms-lib";
-    import { EventType, Status, ToastType, Weekday, type Event } from "../../types";
-    import { createEvent, eventModalStore, initEventModal, updateEvent, updateEventBanner } from "./eventsModal.store";
+    import {Button, Helper, Input, Label, Modal, Select, Spinner, Textarea} from "flowbite-svelte";
+    import {createForm} from "svelte-forms-lib";
+    import {type Event, EventType, Status, ToastType, Weekday} from "../../types";
+    import {
+        createEvent,
+        deleteEvent,
+        eventModalStore,
+        initEventModal,
+        updateEvent,
+        updateEventBanner
+    } from "./eventsModal.store";
     import * as yup from "yup";
-    import { toast } from "../../components";
-    import { formatDate, formatTime } from "../../utils";
-    import { EventCategory } from "../../types/eventCategory";
-    import { CldImage, CldUploadWidget } from "svelte-cloudinary";
+    import {LwpConfirmation, toast} from "../../components";
+    import {formatDate, formatTime} from "../../utils";
+    import {EventCategory} from "../../types/eventCategory";
+    import {CldImage, CldUploadWidget} from "svelte-cloudinary";
 
     export let open: boolean = false;
     export let event: Event;
     export let closeCallback: (reload: boolean) => void;
+
+    let confirmationModal: boolean = false;
 
     $: ({ status } = $eventModalStore);
 
@@ -47,6 +56,12 @@
         }
     });
 
+    const confirmDelete = () => confirmationModal = true;
+    const attemptDelete = async () => {
+        await deleteEvent(event);
+        confirmationModal = false;
+    }
+
     eventModalStore.subscribe(state => {
         if (state.status == Status.OK) {
             toast({message: 'Event Saved', type: ToastType.SUCCESS});
@@ -54,8 +69,16 @@
 
             initEventModal();
         }
+
+        if (state.status == Status.DELETED) {
+            toast({message: 'Event Deleted', type: ToastType.SUCCESS});
+            closeCallback(true);
+
+            initEventModal();
+        }
+
         if (state.status == Status.ERROR) {
-            toast({message: 'Error Saving Event', type: ToastType.ERROR});
+            toast({message: 'Error Performing Action', type: ToastType.ERROR});
         }
     });
 
@@ -155,14 +178,28 @@
             {#if $errors.day}<Helper class="mt-2" color="red">{$errors.day}</Helper>{/if}
         </Label>
 
-        <div class="flex flex-row justify-end items-center">
-            <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
-            <Button type="submit">
-                {#if status == Status.LOADING}
-                    <Spinner class="me-3" size="4" color="white" />
-                {/if}
-                Save
+        <div class="flex flex-row justify-between items-center">
+            <Button
+                on:click={() => confirmDelete()}
+                color="red"
+                disabled={event.id === undefined}>
+                Delete
             </Button>
+            <div>
+                <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
+                <Button type="submit">
+                    {#if status === Status.LOADING}
+                        <Spinner class="me-3" size="4" color="white" />
+                    {/if}
+                    Save
+                </Button>
+            </div>
         </div>
     </form>
+
+    <LwpConfirmation
+        title="Delete Event?"
+        bind:open={confirmationModal}
+        confirm={attemptDelete}
+    />
 </Modal>

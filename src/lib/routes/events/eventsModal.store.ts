@@ -1,6 +1,6 @@
 import { writable } from "svelte/store";
 import { Status, type Event } from "../../types"
-import { sbCreateEvent, sbUpdateEvent } from "../../services/event-service";
+import {sbCreateEvent, sbDeleteEvent, sbUpdateEvent} from "../../services/event-service";
 
 export type EventModalStoreModel = {
     status: Status;
@@ -86,5 +86,28 @@ export const createEvent = async (event: Event) => {
             event: response.data,
             status: Status.OK
         }));
+    }
+}
+
+export const deleteEvent = async (event: Event) => {
+    eventModalStore.update((state) => ({
+        ...state,
+        status: Status.LOADING
+    }));
+
+    const response = await sbDeleteEvent(event);
+
+    if (response.error != undefined) {
+        eventModalStore.update((state) => ({
+            ...state,
+            event: null,
+            status: Status.ERROR
+        }));
+    } else {
+        eventModalStore.update((state) => ({
+            ...state,
+            event: null,
+            status: Status.DELETED
+        }))
     }
 }

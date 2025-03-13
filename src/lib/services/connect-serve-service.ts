@@ -62,3 +62,20 @@ export const sbUpdateConnectServeGroup = async (group: Group): Promise<SingleSup
         error: undefined
     }
 }
+
+export const sbDeleteConnectServeGroup = async (group: Group): Promise<SingleSupabaseResponse<Group>> => {
+    const { data, error } = await supabase.from('groups').delete().eq('id', group.id).single<Group>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
+}

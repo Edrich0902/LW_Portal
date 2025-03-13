@@ -1,6 +1,10 @@
 import { writable } from "svelte/store";
 import { Status, type Group } from "../../types"
-import { sbCreateConnectServeGroup, sbUpdateConnectServeGroup } from "../../services/connect-serve-service";
+import {
+    sbCreateConnectServeGroup,
+    sbDeleteConnectServeGroup,
+    sbUpdateConnectServeGroup
+} from "../../services/connect-serve-service";
 
 export type ConnectServeModalStoreModel = {
     status: Status;
@@ -86,5 +90,28 @@ export const createConnectServeGroup = async (group: Group) => {
             group: response.data,
             status: Status.OK
         }));
+    }
+}
+
+export const deleteConnectServeGroup = async (group: Group) => {
+    connectServeModalStore.update((state) => ({
+        ...state,
+        status: Status.LOADING
+    }));
+
+    const response = await sbDeleteConnectServeGroup(group);
+
+    if (response.error != undefined) {
+        connectServeModalStore.update((state) => ({
+            ...state,
+            group: null,
+            status: Status.ERROR
+        }));
+    } else {
+        connectServeModalStore.update((state) => ({
+            ...state,
+            group: null,
+            status: Status.DELETED
+        }))
     }
 }
