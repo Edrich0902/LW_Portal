@@ -62,3 +62,20 @@ export const sbUpdateEvent = async (event: Event): Promise<SingleSupabaseRespons
         error: undefined
     }
 }
+
+export const sbDeleteEvent = async (event: Event): Promise<SingleSupabaseResponse<Event>> => {
+    const { data, error } = await supabase.from('events').delete().eq('id', event.id).single<Event>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
+}

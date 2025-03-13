@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 import type { Sermon } from "../../types";
 import { Status } from "../../types";
-import { sbCreateSermon, sbUpdateSermon } from "../../services/sermon-service";
+import {sbCreateSermon, sbDeleteSermon, sbUpdateSermon} from "../../services/sermon-service";
 
 export type SermonModalStoreModel = {
     status: Status;
@@ -61,6 +61,29 @@ export const createSermon = async (sermon: Sermon) => {
             ...state,
             sermon: response.data,
             status: Status.OK
+        }));
+    }
+}
+
+export const deleteSermon = async (sermon: Sermon) => {
+    sermonModalStore.update((state) => ({
+        ...state,
+        status: Status.LOADING
+    }));
+
+    const response = await sbDeleteSermon(sermon);
+
+    if (response.error != undefined) {
+        sermonModalStore.update((state) => ({
+            ...state,
+            sermon: null,
+            status: Status.ERROR
+        }));
+    } else {
+        sermonModalStore.update((state) => ({
+            ...state,
+            sermon: null,
+            status: Status.DELETED
         }));
     }
 }

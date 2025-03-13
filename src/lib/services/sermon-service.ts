@@ -62,3 +62,20 @@ export const sbUpdateSermon = async (sermon: Sermon): Promise<SingleSupabaseResp
         error: undefined
     }
 }
+
+export const sbDeleteSermon = async (sermon: Sermon): Promise<SingleSupabaseResponse<Sermon>> => {
+    const { data, error } = await supabase.from('sermons').delete().eq('id', sermon.id).single<Sermon>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
+}

@@ -2,14 +2,23 @@
     import { Button, Helper, Input, Label, Modal, Select, Spinner, Textarea } from "flowbite-svelte";
     import { createForm } from "svelte-forms-lib";
     import { GroupType, Status, ToastType, type Group } from "../../types";
-    import { connectServeModalStore, createConnectServeGroup, initConnectServeModal, updateConnectServeBanner, updateConnectServeGroup } from "./connectServeModal.store";
+    import {
+        connectServeModalStore,
+        createConnectServeGroup,
+        deleteConnectServeGroup,
+        initConnectServeModal,
+        updateConnectServeBanner,
+        updateConnectServeGroup
+    } from "./connectServeModal.store";
     import * as yup from "yup";
-    import { toast } from "../../components";
+    import {LwpConfirmation, toast} from "../../components";
     import { CldImage, CldUploadWidget } from "svelte-cloudinary";
 
     export let open: boolean = false;
     export let group: Group;
     export let closeCallback: (reload: boolean) => void;
+
+    let confirmationModal: boolean = false;
 
     $: ({ status } = $connectServeModalStore);
 
@@ -37,6 +46,12 @@
         }
     });
 
+    const confirmDelete = () => confirmationModal = true;
+    const attemptDelete = async () => {
+        await deleteConnectServeGroup(group);
+        confirmationModal = false;
+    }
+
     connectServeModalStore.subscribe(state => {
         if (state.status == Status.OK) {
             toast({message: 'Group Saved', type: ToastType.SUCCESS});
@@ -44,8 +59,16 @@
 
             initConnectServeModal();
         }
+
+        if (state.status == Status.DELETED) {
+            toast({message: 'Group Deleted', type: ToastType.SUCCESS});
+            closeCallback(true);
+
+            initConnectServeModal();
+        }
+
         if (state.status == Status.ERROR) {
-            toast({message: 'Error Saving Group', type: ToastType.ERROR});
+            toast({message: 'Error Performing Action', type: ToastType.ERROR});
         }
     });
 
@@ -119,14 +142,28 @@
             {#if $errors.location}<Helper class="mt-2" color="red">{$errors.location}</Helper>{/if}
         </Label>
 
-        <div class="flex flex-row justify-end items-center">
-            <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
-            <Button type="submit">
-                {#if status == Status.LOADING}
-                    <Spinner class="me-3" size="4" color="white" />
-                {/if}
-                Save
+        <div class="flex flex-row justify-between items-center">
+            <Button
+                on:click={() => confirmDelete()}
+                color="red"
+                disabled={group.id === undefined}>
+                Delete
             </Button>
+            <div>
+                <Button on:click={() => closeCallback(false)} color="none">Cancel</Button>
+                <Button type="submit">
+                    {#if status === Status.LOADING}
+                        <Spinner class="me-3" size="4" color="white" />
+                    {/if}
+                    Save
+                </Button>
+            </div>
         </div>
     </form>
+
+    <LwpConfirmation
+        title="Delete Group?"
+        bind:open={confirmationModal}
+        confirm={attemptDelete}
+    />
 </Modal>

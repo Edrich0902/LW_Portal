@@ -62,3 +62,20 @@ export const sbUpdateSocialMedia = async (socialMedia: SocialMedia): Promise<Sin
         error: undefined
     }
 }
+
+export const sbDeleteSocialMedia = async (socialMedia: SocialMedia): Promise<SingleSupabaseResponse<SocialMedia>> => {
+    const { data, error } = await supabase.from('social_media').delete().eq('id', socialMedia.id).single<SocialMedia>();
+
+    if (error) {
+        console.error(error.code, error.message);
+        return {
+            data: null,
+            error: error
+        }
+    }
+
+    return {
+        data: data,
+        error: undefined
+    }
+}
